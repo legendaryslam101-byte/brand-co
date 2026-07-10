@@ -999,6 +999,13 @@ input,select,textarea{font-family:inherit}
 </button>
 
 <script src="products.js"></script>
+<script>
+  // Local dev talks to the local backend; anywhere else (Vercel, etc.) talks
+  // to the deployed API on Render.
+  window.BRANDCO_API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? 'http://localhost:4000'
+    : 'https://brandco-api.onrender.com';
+</script>
 <script src="api.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
