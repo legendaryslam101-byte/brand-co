@@ -1,0 +1,9 @@
+.DS_Store
+
+# Raw/unprocessed source images used only as staging material while building
+# product photos — the site itself serves the resized copies from /images/.
+# (hero .png is the one exception: it's the live homepage hero background.)
+/*.png
+/*.jpg
+/*.jpeg
+!/hero*.png

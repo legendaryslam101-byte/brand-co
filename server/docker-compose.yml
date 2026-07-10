@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: brandco
+      POSTGRES_PASSWORD: brandco
+      POSTGRES_DB: brandco
+    ports:
+      - "5432:5432"
+    volumes:
+      - brandco_pgdata:/var/lib/postgresql/data
+
+volumes:
+  brandco_pgdata:

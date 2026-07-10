@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Order Banner</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 800px;
+    height: 1000px;
+    overflow: hidden;
+    font-family: 'Arial Black', 'Arial', sans-serif;
+    background: #050a14;
+  }
+
+  .banner {
+    position: relative;
+    width: 800px;
+    height: 1000px;
+    overflow: hidden;
+    background: #050a14;
+  }
+
+  /* ── BACKGROUND SCENE ── */
+  .bg-scene {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 55% at 50% 52%,
+      rgba(30, 50, 80, 0.45) 0%,
+      rgba(5, 10, 20, 0.92) 65%,
+      #050a14 100%);
+  }
+
+  /* parking lot floor */
+  .floor {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(to top,
+      rgba(3,6,12,1) 0%,
+      rgba(8,18,35,0.6) 50%,
+      transparent 100%);
+  }
+
+  /* Side cars container */
+  .cars-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* SALE badges on side cars */
+  .sale-badge {
+    position: absolute;
+    background: #cc1111;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 3px 7px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    z-index: 5;
+  }
+
+  /* ── CENTER SPOTLIGHT CAR ── */
+  .spotlight {
+    position: absolute;
+    left: 50%;
+    top: 37%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(ellipse 70% 65% at 50% 50%,
+      rgba(180, 200, 230, 0.18) 0%,
+      rgba(100, 140, 200, 0.08) 40%,
+      transparent 70%);
+    z-index: 3;
+  }
+
+  .spotlight-floor {
+    position: absolute;
+    left: 50%;
+    top: 56%;
+    transform: translate(-50%, 0);
+    width: 340px;
+    height: 60px;
+    background: radial-gradient(ellipse 80% 100% at 50% 0%,
+      rgba(160, 190, 230, 0.15) 0%,
+      transparent 100%);
+    z-index: 2;
+  }
+
+  /* ── TOP TEXT ── */
+  .top-text {
+    position: absolute;
+    top: 60px;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+    padding: 0 40px;
+  }
+
+  .top-text .tagline {
+    color: rgba(255,255,255,0.88);
+    font-size: 22px;
+    font-weight: 400;
+    font-family: 'Georgia', serif;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    font-style: italic;
+  }
+
+  .top-text .headline {
+    color: #ffffff;
+    font-size: 46px;
+    font-weight: 900;
+    font-family: 'Arial Black', 'Arial', sans-serif;
+    letter-spacing: -0.5px;
+    line-height: 1.05;
+    text-transform: uppercase;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  }
+
+  /* ── BOTTOM INFO STRIP ── */
+  .bottom-strip {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 360px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 30px;
+  }
+
+  .offer-row {
+    display: flex;
+    align-items: stretch;
+    padding: 0 32px;
+    gap: 0;
+    margin-bottom: 22px;
+  }
+
+  /* Left offer block */
+  .offer-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 20px;
+  }
+
+  .preorder-label {
+    font-size: 48px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .offer-sub {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .offer-direct {
+    font-size: 14px;
+    font-weight: 900;
+    color: #4da6ff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .bullets {
+    list-style: none;
+    margin-bottom: 10px;
+  }
+
+  .bullets li {
+    color: rgba(255,255,255,0.80);
+    font-size: 11.5px;
+    font-weight: 400;
+    line-height: 1.7;
+    padding-left: 12px;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+
+  .bullets li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #4da6ff;
+    font-size: 13px;
+  }
+
+  .phone-tag {
+    font-size: 15px;
+    font-weight: 900;
+    color: #ffffff;
+    font-family: 'Arial Black', Arial, sans-serif;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  /* Divider */
+  .divider {
+    width: 2px;
+    background: rgba(255,255,255,0.25);
+    margin: 0 4px;
+    align-self: stretch;
+  }
+
+  /* Right badge block */
+  .offer-right {
+    width: 155px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 20px;
+  }
+
+  .usa-badge {
+    background: #0066CC;
+    border-radius: 12px;
+    width: 140px;
+    height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 14px;
+  }
+
+  .usa-badge .flag-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  .usa-badge-text {
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 1.15;
+    letter-spacing: 0.5px;
+    font-family: 'Arial Black', Arial, sans-serif;
+  }
+
+  /* CTA Button */
+  .cta-wrap {
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .cta-btn {
+    background: transparent;
+    border: 2.5px solid #ffffff;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 14px 40px;
+    border-radius: 50px;
+    font-family: 'Arial Black', Arial, sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ── SVG CAR SHAPES ── */
+  .cars-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+
+  <!-- Background gradient -->
+  <div class="bg-scene"></div>
+
+  <!-- Side cars SVG -->
+  <svg class="cars-svg" viewBox="0 0 800 1000" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Dark overlay top -->
+      <linearGradient id="topFade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#050a14" stop-opacity="0.55"/>
+        <stop offset="40%" stop-color="#050a14" stop-opacity="0"/>
+      </linearGradient>
+      <!-- Bottom fade -->
+      <linearGradient id="botFade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#050a14" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#050a14" stop-opacity="1"/>
+      </linearGradient>
+      <!-- Spotlight glow -->
+      <radialGradient id="spotGlow" cx="50%" cy="52%" r="35%">
+        <stop offset="0%" stop-color="#b8cce8" stop-opacity="0.22"/>
+        <stop offset="60%" stop-color="#6090c0" stop-opacity="0.06"/>
+        <stop offset="100%" stop-color="#050a14" stop-opacity="0"/>
+      </radialGradient>
+      <!-- Floor reflection -->
+      <radialGradient id="floorGlow" cx="50%" cy="0%" r="60%">
+        <stop offset="0%" stop-color="#8aaedd" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#050a14" stop-opacity="0"/>
+      </radialGradient>
+      <!-- Left side fade -->
+      <linearGradient id="leftFade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#050a14" stop-opacity="0.9"/>
+        <stop offset="50%" stop-color="#050a14" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#050a14" stop-opacity="0"/>
+      </linearGradient>
+      <!-- Right side fade -->
+      <linearGradient id="rightFade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#050a14" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#050a14" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#050a14" stop-opacity="0.9"/>
+      </linearGradient>
+    </defs>
+
+    <!-- PARKING LOT GROUND -->
+    <rect x="0" y="560" width="800" height="440" fill="#0a1220" opacity="0.9"/>
+    <!-- Lane lines -->
+    <rect x="0" y="565" width="800" height="1" fill="rgba(255,255,255,0.06)"/>
+
+    <!-- ── LEFT SIDE CARS (angled, darker, in rows) ── -->
+    <!-- Far left car 1 - silver/dark, angled away -->
+    <g transform="rotate(-18, 50, 500)" opacity="0.55">
+      <!-- Car body -->
+      <rect x="-80" y="470" width="230" height="70" rx="12" fill="#1a2535"/>
+      <rect x="-50" y="445" width="175" height="45" rx="10" fill="#1e2e45"/>
+      <!-- Windows -->
+      <rect x="-30" y="450" width="65" height="32" rx="5" fill="#0d1825" opacity="0.9"/>
+      <rect x="50" y="450" width="70" height="32" rx="5" fill="#0d1825" opacity="0.9"/>
+      <!-- Wheels -->
+      <ellipse cx="-10" cy="542" rx="30" ry="12" fill="#0a0f18"/>
+      <ellipse cx="140" cy="542" rx="30" ry="12" fill="#0a0f18"/>
+      <!-- Headlights -->
+      <rect x="-82" y="490" width="14" height="18" rx="3" fill="#cc3300" opacity="0.7"/>
+    </g>
+
+    <!-- Far left car 2 - behind -->
+    <g transform="rotate(-22, -30, 450)" opacity="0.38">
+      <rect x="-120" y="420" width="210" height="65" rx="10" fill="#131c2a"/>
+      <rect x="-95" y="398" width="160" height="42" rx="8" fill="#1a2738"/>
+      <ellipse cx="-45" cy="487" rx="26" ry="10" fill="#080d15"/>
+      <ellipse cx="90" cy="487" rx="26" ry="10" fill="#080d15"/>
+    </g>
+
+    <!-- Far left car 3 - further left edge -->
+    <g transform="rotate(-15, -100, 480)" opacity="0.28">
+      <rect x="-180" y="455" width="200" height="60" rx="10" fill="#0f1824"/>
+      <rect x="-155" y="435" width="155" height="38" rx="7" fill="#16243a"/>
+      <ellipse cx="-110" cy="517" rx="24" ry="10" fill="#080d15"/>
+      <ellipse cx="10" cy="517" rx="24" ry="10" fill="#080d15"/>
+    </g>
+
+    <!-- Left mid car -->
+    <g transform="rotate(-12, 80, 540)" opacity="0.45">
+      <rect x="-20" y="530" width="220" height="68" rx="11" fill="#152030"/>
+      <rect x="5" y="508" width="170" height="44" rx="9" fill="#1c2e45"/>
+      <rect x="15" y="513" width="60" height="30" rx="4" fill="#0d1825" opacity="0.85"/>
+      <rect x="85" y="513" width="68" height="30" rx="4" fill="#0d1825" opacity="0.85"/>
+      <ellipse cx="35" cy="600" rx="28" ry="11" fill="#0a0f18"/>
+      <ellipse cx="165" cy="600" rx="28" ry="11" fill="#0a0f18"/>
+      <rect x="-22" y="550" width="12" height="16" rx="3" fill="#cc3300" opacity="0.6"/>
+    </g>
+
+    <!-- ── RIGHT SIDE CARS (angled, darker) ── -->
+    <!-- Far right car 1 -->
+    <g transform="rotate(18, 750, 500)" opacity="0.55">
+      <rect x="640" y="470" width="230" height="70" rx="12" fill="#1a2535"/>
+      <rect x="670" y="445" width="175" height="45" rx="10" fill="#1e2e45"/>
+      <rect x="680" y="450" width="65" height="32" rx="5" fill="#0d1825" opacity="0.9"/>
+      <rect x="755" y="450" width="70" height="32" rx="5" fill="#0d1825" opacity="0.9"/>
+      <ellipse cx="665" cy="542" rx="30" ry="12" fill="#0a0f18"/>
+      <ellipse cx="810" cy="542" rx="30" ry="12" fill="#0a0f18"/>
+      <rect x="868" y="490" width="14" height="18" rx="3" fill="#ffaa00" opacity="0.7"/>
+    </g>
+
+    <!-- Far right car 2 -->
+    <g transform="rotate(22, 830, 450)" opacity="0.38">
+      <rect x="710" y="420" width="210" height="65" rx="10" fill="#131c2a"/>
+      <rect x="735" y="398" width="160" height="42" rx="8" fill="#1a2738"/>
+      <ellipse cx="750" cy="487" rx="26" ry="10" fill="#080d15"/>
+      <ellipse cx="890" cy="487" rx="26" ry="10" fill="#080d15"/>
+    </g>
+
+    <!-- Far right car 3 -->
+    <g transform="rotate(15, 900, 480)" opacity="0.28">
+      <rect x="780" y="455" width="200" height="60" rx="10" fill="#0f1824"/>
+      <rect x="800" y="435" width="155" height="38" rx="7" fill="#16243a"/>
+      <ellipse cx="800" cy="517" rx="24" ry="10" fill="#080d15"/>
+      <ellipse cx="920" cy="517" rx="24" ry="10" fill="#080d15"/>
+    </g>
+
+    <!-- Right mid car -->
+    <g transform="rotate(12, 720, 540)" opacity="0.45">
+      <rect x="600" y="530" width="220" height="68" rx="11" fill="#152030"/>
+      <rect x="625" y="508" width="170" height="44" rx="9" fill="#1c2e45"/>
+      <rect x="630" y="513" width="60" height="30" rx="4" fill="#0d1825" opacity="0.85"/>
+      <rect x="700" y="513" width="68" height="30" rx="4" fill="#0d1825" opacity="0.85"/>
+      <ellipse cx="635" cy="600" rx="28" ry="11" fill="#0a0f18"/>
+      <ellipse cx="765" cy="600" rx="28" ry="11" fill="#0a0f18"/>
+      <rect x="810" y="550" width="12" height="16" rx="3" fill="#ffaa00" opacity="0.6"/>
+    </g>
+
+    <!-- ── CENTER SPOTLIGHT ── -->
+    <ellipse cx="400" cy="510" rx="290" ry="210" fill="url(#spotGlow)"/>
+    <ellipse cx="400" cy="510" rx="180" ry="130" fill="rgba(180,210,255,0.06)"/>
+    <!-- Floor glow under center car -->
+    <ellipse cx="400" cy="655" rx="200" ry="55" fill="url(#floorGlow)"/>
+    <!-- Headlight beam cones -->
+    <path d="M290 570 L130 720 Q200 700 280 660 Z" fill="rgba(200,230,255,0.04)"/>
+    <path d="M510 570 L670 720 Q600 700 520 660 Z" fill="rgba(200,230,255,0.04)"/>
+
+    <!-- ── CENTER HERO CAR – FRONT 3/4 VIEW (white/silver, spotlit) ── -->
+    <!-- Ground shadow -->
+    <ellipse cx="400" cy="650" rx="175" ry="18" fill="rgba(0,0,0,0.75)"/>
+
+    <g transform="translate(0,-18) scale(1.08) translate(-33,0)">
+      <!-- ===== FRONT-FACING CAR (slight top-down hero angle) ===== -->
+
+      <!-- ROOF flat top visible from slight above angle -->
+      <path d="M328 432 Q360 416 400 412 Q440 416 472 432 L482 456 Q445 444 400 442 Q355 444 318 456 Z"
+            fill="#dde8f2"/>
+      <path d="M345 423 Q372 413 400 411 Q428 413 455 423"
+            stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- WINDSHIELD (steep angle, mostly visible as narrow band) -->
+      <path d="M318 456 Q340 448 370 443 L430 443 Q460 448 482 456 L490 490 Q455 480 400 478 Q345 480 310 490 Z"
+            fill="#0c1a2d" opacity="0.9"/>
+      <!-- Windshield glare -->
+      <path d="M330 488 Q340 468 358 453 L375 450"
+            stroke="rgba(255,255,255,0.18)" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+      <!-- A-PILLARS (connecting roof to body) -->
+      <path d="M310 490 L290 530 L315 532 L330 494 Z" fill="#c5d4e2"/>
+      <path d="M490 490 L510 530 L485 532 L470 494 Z" fill="#c5d4e2"/>
+
+      <!-- SIDE WINDOWS -->
+      <rect x="292" y="505" width="64" height="26" rx="5" fill="#0c1a2d" opacity="0.8"/>
+      <rect x="362" y="498" width="76" height="28" rx="5" fill="#0c1a2d" opacity="0.8"/>
+      <rect x="444" y="498" width="76" height="28" rx="5" fill="#0c1a2d" opacity="0.8"/>
+      <rect x="444" y="505" width="64" height="26" rx="5" fill="#0c1a2d" opacity="0.8"/>
+
+      <!-- UPPER BODY / HOOD TOP SURFACE -->
+      <path d="M288 530 Q310 506 360 496 L440 496 Q490 506 512 530 L520 548 Q465 535 400 533 Q335 535 280 548 Z"
+            fill="#d4e2f0"/>
+      <!-- Hood top highlight (light hitting it from above) -->
+      <path d="M340 512 Q368 504 400 502 Q432 504 460 512"
+            stroke="rgba(255,255,255,0.35)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Hood center crease -->
+      <path d="M370 496 L400 493 L430 496"
+            stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none"/>
+
+      <!-- FRONT FACE (the main front-facing part) -->
+      <!-- Main body front width widens slightly -->
+      <path d="M280 548 Q305 538 355 534 L445 534 Q495 538 520 548 L525 618 Q475 626 400 628 Q325 626 275 618 Z"
+            fill="#cdd9e6"/>
+
+      <!-- SHOULDER LINE / BODY FEATURE LINE -->
+      <path d="M282 552 Q340 542 400 540 Q460 542 518 552"
+            stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- FRONT FASCIA / BUMPER FACE -->
+      <path d="M280 598 Q305 594 355 590 L445 590 Q495 594 520 598 L525 630 Q475 638 400 640 Q325 638 275 630 Z"
+            fill="#b8c8d8"/>
+
+      <!-- GRILLE – main opening -->
+      <path d="M318 598 Q340 592 370 590 L430 590 Q460 592 482 598 L484 626 Q455 632 400 634 Q345 632 316 626 Z"
+            fill="#07101d"/>
+      <!-- Grille horizontal bars -->
+      <path d="M320 605 Q358 601 400 600 Q442 601 480 605" stroke="#1a2e48" stroke-width="2" fill="none"/>
+      <path d="M318 613 Q358 609 400 608 Q442 609 482 613" stroke="#1a2e48" stroke-width="2" fill="none"/>
+      <path d="M318 621 Q358 617 400 616 Q442 617 482 621" stroke="#1a2e48" stroke-width="2" fill="none"/>
+      <!-- Grille vertical dividers -->
+      <line x1="348" y1="590" x2="342" y2="634" stroke="#1a2e48" stroke-width="1.5"/>
+      <line x1="374" y1="590" x2="370" y2="634" stroke="#1a2e48" stroke-width="1"/>
+      <line x1="400" y1="589" x2="400" y2="634" stroke="#1a2e48" stroke-width="1.5"/>
+      <line x1="426" y1="590" x2="430" y2="634" stroke="#1a2e48" stroke-width="1"/>
+      <line x1="452" y1="590" x2="458" y2="634" stroke="#1a2e48" stroke-width="1.5"/>
+      <!-- Center emblem -->
+      <ellipse cx="400" cy="576" rx="13" ry="9" fill="#1a2e48" stroke="rgba(200,220,255,0.3)" stroke-width="1"/>
+      <ellipse cx="400" cy="576" rx="7" ry="5" fill="#2a3e58"/>
+
+      <!-- HEADLIGHT assemblies – left -->
+      <path d="M280 550 Q282 538 295 534 L318 534 L316 590 Q295 586 278 574 Q276 562 280 550 Z"
+            fill="#cdd8e8" opacity="0.95"/>
+      <!-- HL inner dark housing -->
+      <path d="M284 554 Q286 542 297 539 L314 539 L312 583 Q295 580 282 570 Z"
+            fill="#0c1825"/>
+      <!-- HL projector lens left -->
+      <ellipse cx="298" cy="562" rx="12" ry="9" fill="#1a2d45"/>
+      <ellipse cx="298" cy="562" rx="7" ry="5" fill="#d8eeff" opacity="0.9"/>
+      <!-- DRL strip left (LED daytime running) -->
+      <path d="M284 576 Q294 580 312 582" stroke="#e8f4ff" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.95"/>
+      <!-- HL glow -->
+      <ellipse cx="290" cy="562" rx="38" ry="22" fill="rgba(200,230,255,0.22)"/>
+      <ellipse cx="290" cy="562" rx="18" ry="12" fill="rgba(220,240,255,0.38)"/>
+
+      <!-- HEADLIGHT assemblies – right -->
+      <path d="M520 550 Q518 538 505 534 L482 534 L484 590 Q505 586 522 574 Q524 562 520 550 Z"
+            fill="#cdd8e8" opacity="0.95"/>
+      <path d="M516 554 Q514 542 503 539 L486 539 L488 583 Q505 580 518 570 Z"
+            fill="#0c1825"/>
+      <ellipse cx="502" cy="562" rx="12" ry="9" fill="#1a2d45"/>
+      <ellipse cx="502" cy="562" rx="7" ry="5" fill="#d8eeff" opacity="0.9"/>
+      <path d="M516 576 Q506 580 488 582" stroke="#e8f4ff" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.95"/>
+      <ellipse cx="510" cy="562" rx="38" ry="22" fill="rgba(200,230,255,0.22)"/>
+      <ellipse cx="510" cy="562" rx="18" ry="12" fill="rgba(220,240,255,0.38)"/>
+
+      <!-- FOG LIGHTS -->
+      <rect x="288" y="620" width="38" height="11" rx="4" fill="#b0c8e0" opacity="0.85"/>
+      <rect x="474" y="620" width="38" height="11" rx="4" fill="#b0c8e0" opacity="0.85"/>
+
+      <!-- BUMPER LIP -->
+      <path d="M275 630 Q325 640 400 642 Q475 640 525 630 L524 644 Q474 654 400 656 Q326 654 276 644 Z"
+            fill="#a8b8c8"/>
+
+      <!-- WHEELS left -->
+      <ellipse cx="285" cy="648" rx="48" ry="20" fill="#070c16"/>
+      <ellipse cx="285" cy="648" rx="38" ry="16" fill="#10192a"/>
+      <ellipse cx="285" cy="648" rx="25" ry="10" fill="#070c16"/>
+      <ellipse cx="285" cy="648" rx="15" ry="6" fill="#192435"/>
+      <line x1="285" y1="638" x2="285" y2="658" stroke="#243448" stroke-width="2"/>
+      <line x1="274" y1="641" x2="296" y2="655" stroke="#243448" stroke-width="2"/>
+      <line x1="274" y1="655" x2="296" y2="641" stroke="#243448" stroke-width="2"/>
+      <line x1="270" y1="648" x2="300" y2="648" stroke="#243448" stroke-width="2"/>
+
+      <!-- WHEELS right -->
+      <ellipse cx="515" cy="648" rx="48" ry="20" fill="#070c16"/>
+      <ellipse cx="515" cy="648" rx="38" ry="16" fill="#10192a"/>
+      <ellipse cx="515" cy="648" rx="25" ry="10" fill="#070c16"/>
+      <ellipse cx="515" cy="648" rx="15" ry="6" fill="#192435"/>
+      <line x1="515" y1="638" x2="515" y2="658" stroke="#243448" stroke-width="2"/>
+      <line x1="504" y1="641" x2="526" y2="655" stroke="#243448" stroke-width="2"/>
+      <line x1="504" y1="655" x2="526" y2="641" stroke="#243448" stroke-width="2"/>
+      <line x1="500" y1="648" x2="530" y2="648" stroke="#243448" stroke-width="2"/>
+    </g>
+
+    <!-- SALE badges on side cars -->
+    <!-- Left SALE badges -->
+    <g>
+      <rect x="30" y="453" width="44" height="18" rx="3" fill="#cc1111"/>
+      <text x="52" y="466" text-anchor="middle" fill="white" font-size="9" font-weight="900" font-family="Arial" letter-spacing="1">SALE</text>
+
+      <rect x="-5" y="510" width="44" height="18" rx="3" fill="#cc1111"/>
+      <text x="17" y="523" text-anchor="middle" fill="white" font-size="9" font-weight="900" font-family="Arial" letter-spacing="1">SALE</text>
+
+      <rect x="55" y="535" width="44" height="18" rx="3" fill="#cc1111"/>
+      <text x="77" y="548" text-anchor="middle" fill="white" font-size="9" font-weight="900" font-family="Arial" letter-spacing="1">SALE</text>
+    </g>
+
+    <!-- Right SALE badges -->
+    <g>
+      <rect x="726" y="453" width="44" height="18" rx="3" fill="#cc1111"/>
+      <text x="748" y="466" text-anchor="middle" fill="white" font-size="9" font-weight="900" font-family="Arial" letter-spacing="1">SALE</text>
+
+      <rect x="762" y="510" width="44" height="18" rx="3" fill="#cc1111"/>
+      <text x="784" y="523" text-anchor="middle" fill="white" font-size="9" font-weight="900" font-family="Arial" letter-spacing="1">SALE</text>
+
+      <rect x="700" y="535" width="44" height="18" rx="3" fill="#cc1111"/>
+      <text x="722" y="548" text-anchor="middle" fill="white" font-size="9" font-weight="900" font-family="Arial" letter-spacing="1">SALE</text>
+    </g>
+
+    <!-- Side edge fades -->
+    <rect x="0" y="0" width="140" height="1000" fill="url(#leftFade)"/>
+    <rect x="660" y="0" width="140" height="1000" fill="url(#rightFade)"/>
+    <!-- Top fade -->
+    <rect x="0" y="0" width="800" height="180" fill="url(#topFade)"/>
+    <!-- Bottom fade -->
+    <rect x="0" y="640" width="800" height="360" fill="url(#botFade)"/>
+  </svg>
+
+  <!-- Spotlight overlays -->
+  <div class="spotlight"></div>
+  <div class="spotlight-floor"></div>
+
+  <!-- ── TOP HEADLINE TEXT ── -->
+  <div class="top-text">
+    <div class="tagline">Cancel the noise of</div>
+    <div class="headline">CONFUSING<br>DEALS.</div>
+  </div>
+
+  <!-- ── BOTTOM INFO STRIP ── -->
+  <div class="bottom-strip">
+    <div class="offer-row">
+      <!-- Left block -->
+      <div class="offer-left">
+        <div class="preorder-label">PRE-ORDER</div>
+        <div class="offer-sub">CLEAN FOREIGN USED CARS</div>
+        <div class="offer-direct">DIRECT FROM USA!</div>
+        <ul class="bullets">
+          <li>Accident-Free with Original Mileage &amp; Verified History</li>
+          <li>Full Nigerian Customs Duty Paid &amp; Cleared</li>
+          <li>Flexible Payment Options Available</li>
+          <li>Delivery Within 6 to 8 Weeks</li>
+        </ul>
+        <div class="phone-tag">+234 814 376 4778</div>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider"></div>
+
+      <!-- Right badge -->
+      <div class="offer-right">
+        <div class="usa-badge">
+          <div class="flag-icon">🇺🇸</div>
+          <div class="usa-badge-text">DIRECT<br>FROM<br>USA</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Button -->
+    <div class="cta-wrap">
+      <div class="cta-btn">BOOK NOW &amp; SECURE YOUR CAR!</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
