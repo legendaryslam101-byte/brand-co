@@ -1179,6 +1179,16 @@ function renderProducts() {
         animateATC(atcBtn);
       }
     });
+
+    // Whole-card tap-through-to-product. The image and "View Product" pill
+    // are real <a> tags already (for keyboard nav / open-in-new-tab), but
+    // the name/description/price area wasn't wrapped in anything — on touch
+    // devices in particular that reads as "most of the card isn't
+    // clickable". This makes the entire card navigate on tap, except the
+    // Add to Cart button (its own handler above stops propagation).
+    card.addEventListener('click', () => {
+      location.href = `/marketplace/product.html?slug=${slug}`;
+    });
   });
 }
 
