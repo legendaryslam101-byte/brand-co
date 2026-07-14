@@ -261,27 +261,6 @@ input,select,textarea{font-family:inherit}
 .pc-badge.badge-new{color:#34d399; border-color:rgba(52,211,153,.3)}
 .pc-badge.badge-limited{color:#f87171; border-color:rgba(248,113,113,.3)}
 
-/* quick-add overlay on hover */
-.pc-overlay{
-  position:absolute; inset:0; z-index:3;
-  background:rgba(37,69,64,.55);
-  display:flex; align-items:center; justify-content:center;
-  opacity:0; transition:opacity .28s;
-  backdrop-filter:blur(2px);
-}
-.pc:hover .pc-overlay{opacity:1}
-.pc-quick{
-  background:var(--lime); color:var(--bk);
-  font-size:.72rem; font-weight:700; letter-spacing:.04em;
-  padding:.65rem 1.4rem; border-radius:2rem;
-  border:none; cursor:pointer;
-  transform:translateY(8px); transition:all .28s;
-  display:flex; align-items:center; gap:.45rem;
-}
-.pc:hover .pc-quick{transform:translateY(0)}
-.pc-quick:hover{background:var(--wh)}
-.pc-quick svg{width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round}
-
 /* inventory dot */
 .pc-stock{
   position:absolute; bottom:.75rem; right:.75rem; z-index:2;
@@ -928,7 +907,14 @@ input,select,textarea{font-family:inherit}
           <span class="co-field-err">Please enter your phone number</span>
         </div>
         <div class="physical-only" id="physicalFields">
-          <div class="co-field" id="ff-address" style="margin-top:0">
+          <div class="co-field" id="ff-zone" style="margin-top:0">
+            <label for="cfZone">Delivery Location</label>
+            <select id="cfZone">
+              <option value="lagos">Within Lagos — ₦7,000</option>
+              <option value="outside_lagos">Outside Lagos — ₦10,000</option>
+            </select>
+          </div>
+          <div class="co-field" id="ff-address">
             <label for="cfAddress">Delivery Address</label>
             <input type="text" id="cfAddress" placeholder="Street address, City, State" autocomplete="street-address">
             <span class="co-field-err">Please enter a delivery address</span>
@@ -1013,10 +999,14 @@ input,select,textarea{font-family:inherit}
    ═══════════════════════════════════════════════════════════════════ */
 const CONFIG = {
   CURRENCY: 'NGN',
-  DELIVERY_FEE: 2500,       // Naira, for physical products
-  FREE_DELIVERY_THRESHOLD: 100000, // orders above this get free delivery
+  DELIVERY_FEE_LAGOS: 7000,          // Naira, physical orders delivered within Lagos
+  DELIVERY_FEE_OUTSIDE_LAGOS: 10000, // Naira, physical orders delivered outside Lagos
   SERVICE_CATEGORIES: ['Services', 'Digital'], // no delivery for these
 };
+
+function getDeliveryFee(zone) {
+  return zone === 'outside_lagos' ? CONFIG.DELIVERY_FEE_OUTSIDE_LAGOS : CONFIG.DELIVERY_FEE_LAGOS;
+}
 
 /* ─── STATE ────────────────────────────────────────────────────────── */
 // The cart lives server-side (see /api.js + /server) — `cart` here is a
@@ -1180,12 +1170,12 @@ function renderProducts() {
       }
     });
 
-    // Whole-card tap-through-to-product. The image and "View Product" pill
-    // are real <a> tags already (for keyboard nav / open-in-new-tab), but
-    // the name/description/price area wasn't wrapped in anything — on touch
-    // devices in particular that reads as "most of the card isn't
-    // clickable". This makes the entire card navigate on tap, except the
-    // Add to Cart button (its own handler above stops propagation).
+    // Whole-card tap-through-to-product. The image is a real <a> tag already
+    // (for keyboard nav / open-in-new-tab), but the name/description/price
+    // area wasn't wrapped in anything — on touch devices in particular that
+    // reads as "most of the card isn't clickable". This makes the entire
+    // card navigate on tap, except the Add to Cart button (its own handler
+    // above stops propagation).
     card.addEventListener('click', () => {
       location.href = `/marketplace/product.html?slug=${slug}`;
     });
@@ -1224,12 +1214,6 @@ function buildCard(p) {
       <img src="${img}" alt="${p.name}" loading="lazy" width="400" height="300">
       ${badgeHtml}
       ${stockHtml}
-      <div class="pc-overlay">
-        <a href="${productUrl}" class="pc-quick" style="text-decoration:none" onclick="event.stopPropagation()">
-          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          View Product
-        </a>
-      </div>
     </a>
     <div class="pc-body">
       <div class="pc-cat">${p.category}</div>
@@ -1351,12 +1335,12 @@ function renderCartBody() {
 function renderCartTotals() {
   const subtotal = cartTotal();
   const physical = cartIsPhysical();
-  const delivery = physical && subtotal < CONFIG.FREE_DELIVERY_THRESHOLD ? CONFIG.DELIVERY_FEE : 0;
-  const total = subtotal + delivery;
+  // Delivery depends on the customer's location, picked during checkout —
+  // not known yet at the cart-drawer stage.
   $('cartTotals').innerHTML = `
     <div class="cart-row"><span>Subtotal (${cartCount()} items)</span><span>${fmt(subtotal)}</span></div>
-    ${physical ? `<div class="cart-row"><span>Delivery</span><span>${delivery === 0 ? '<span style="color:#34d399">FREE</span>' : fmt(delivery)}</span></div>` : ''}
-    <div class="cart-row total"><span>Total</span><span>${fmt(total)}</span></div>`;
+    ${physical ? `<div class="cart-row"><span>Delivery</span><span style="opacity:.6">Calculated at checkout</span></div>` : ''}
+    <div class="cart-row total"><span>Total</span><span>${fmt(subtotal)}</span></div>`;
 }
 
 /* ─── CART DRAWER OPEN / CLOSE ───────────────────────────────────────── */
@@ -1427,10 +1411,13 @@ function renderCheckoutStep(step) {
   if (step === 1) renderCheckoutOrderSummary();
 }
 
+// Only meaningful once step 2 (where the delivery zone is picked) has been
+// reached — the zone select always has a value (defaults to "lagos"), so
+// this is safe to call from step 3 onward.
 function getCheckoutTotal() {
   const sub = cartTotal();
   const phy = cartIsPhysical();
-  const del = phy && sub < CONFIG.FREE_DELIVERY_THRESHOLD ? CONFIG.DELIVERY_FEE : 0;
+  const del = phy ? getDeliveryFee($('cfZone').value) : 0;
   return sub + del;
 }
 
@@ -1456,13 +1443,13 @@ function renderCheckoutOrderSummary() {
 
   const subtotal = cartTotal();
   const physical = cartIsPhysical();
-  const delivery = physical && subtotal < CONFIG.FREE_DELIVERY_THRESHOLD ? CONFIG.DELIVERY_FEE : 0;
-  const total = subtotal + delivery;
+  // Delivery fee depends on the location picked in the next step (Details) —
+  // not known yet while reviewing the order, so just flag that it's coming.
 
   $('coTotals').innerHTML = `
     <div class="co-trow"><span>Subtotal</span><span>${fmt(subtotal)}</span></div>
-    <div class="co-trow"><span>Delivery</span><span>${delivery === 0 ? (physical ? '<span style="color:#34d399">FREE</span>' : '—') : fmt(delivery)}</span></div>
-    <div class="co-trow grand"><span>Total</span><span>${fmt(total)}</span></div>`;
+    <div class="co-trow"><span>Delivery</span><span>${physical ? 'Calculated at next step' : '—'}</span></div>
+    <div class="co-trow grand"><span>Total</span><span>${fmt(subtotal)}</span></div>`;
 
   const noteEl = $('deliveryNote');
   const noteText = $('deliveryNoteText');
@@ -1513,7 +1500,7 @@ async function submitOrderAndPay() {
       customerEmail: $('cfEmail').value.trim(),
       customerPhone: $('cfPhone').value.trim(),
       shippingAddress: cartIsPhysical()
-        ? { address: $('cfAddress').value.trim(), note: $('cfNote').value.trim() }
+        ? { zone: $('cfZone').value, address: $('cfAddress').value.trim(), note: $('cfNote').value.trim() }
         : { note: $('cfNote').value.trim() },
     });
 
