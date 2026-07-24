@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service — Brand&amp;co.</title>
+<meta name="description" content="Branding, design, and production services from Brand&amp;co. Nigeria.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g0:#254540;--g1:#2d534d;--g2:#35645c;--g3:#447e75;--g4:#559f94;
+  --lime:#c9e83a;--limed:#a2bc2d;
+  --cream:#E1DED7;--cr2:rgba(225,222,215,.65);--cr3:rgba(225,222,215,.12);
+  --lb:rgba(201,232,58,.18);--lg:rgba(201,232,58,.07);
+  --wh:#f5f2ec;--bk:#0e1b19;
+  --card:#294c47;--card-hover:#305a53;
+  --radius:1.25rem;--radius-sm:.75rem;
+  --shadow:0 8px 32px rgba(0,0,0,.45);
+  --shadow-lg:0 24px 80px rgba(0,0,0,.6);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --t:.28s;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--g0);color:var(--cream);
+  -webkit-font-smoothing:antialiased;
+  padding-top:64px;
+}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+img{display:block;max-width:100%}
+
+/* ─── NAV ────────────────────────────────────────────────────────── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.875rem 2.5rem;height:64px;
+  background:rgba(37,69,64,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(201,232,58,.08);
+}
+.nav-logo{font-size:1.1rem;font-weight:800;letter-spacing:-.03em;color:var(--cream);display:flex;align-items:center;gap:.25rem}
+.nav-logo .acc{color:var(--lime)}
+.nav-back{display:flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:500;letter-spacing:.04em;color:var(--cr2);transition:color var(--t);padding:.3rem 0}
+.nav-back:hover{color:var(--lime)}
+.nav-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* ─── BREADCRUMB ─────────────────────────────────────────────────── */
+.breadcrumb{
+  max-width:1000px;margin:0 auto;padding:1.5rem 1.5rem .5rem;
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+  font-size:.7rem;font-weight:500;color:var(--cr2);
+}
+.breadcrumb a{transition:color .2s}
+.breadcrumb a:hover{color:var(--lime)}
+.breadcrumb-sep{opacity:.35;font-size:.65rem}
+
+/* ─── PAGE ───────────────────────────────────────────────────────── */
+.page{max-width:1000px;margin:0 auto;padding:1.5rem 1.5rem 6rem}
+
+.svc-hero{
+  border-radius:var(--radius);overflow:hidden;position:relative;
+  height:340px;margin-bottom:2.5rem;border:1px solid rgba(201,232,58,.08);
+}
+.svc-hero img{width:100%;height:100%;object-fit:cover}
+.svc-hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--sc,var(--lime));
+}
+.svc-hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(14,27,25,.85) 0%,rgba(14,27,25,.15) 55%,transparent 80%);
+  display:flex;align-items:flex-end;padding:2rem;
+}
+.svc-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sc,var(--lime));margin-bottom:.6rem}
+.svc-h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+
+.svc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem}
+.svc-tag{font-size:.68rem;font-weight:600;padding:.32rem .85rem;border-radius:10rem;background:rgba(225,222,215,.07);color:rgba(225,222,215,.6)}
+
+.svc-desc{font-size:1rem;line-height:1.8;color:var(--cr2);max-width:680px;margin-bottom:2.5rem}
+
+.svc-included{
+  background:var(--card);border:1px solid rgba(225,222,215,.08);
+  border-radius:var(--radius);padding:1.75rem;margin-bottom:2.75rem;
+}
+.svc-included-h{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:1.1rem}
+.svc-included ul{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+.svc-included li{display:flex;align-items:flex-start;gap:.65rem;font-size:.92rem;color:var(--cream);line-height:1.5}
+.svc-included li svg{width:18px;height:18px;stroke:var(--lime);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:.15rem}
+
+/* ─── CTA ────────────────────────────────────────────────────────── */
+.svc-cta{
+  background:var(--card);border:1.5px solid rgba(201,232,58,.18);
+  border-radius:var(--radius);padding:2.25rem;text-align:center;
+}
+.svc-cta-h{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem}
+.svc-cta-p{font-size:.9rem;color:var(--cr2);max-width:440px;margin:0 auto 1.75rem;line-height:1.6}
+.svc-cta-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.85rem}
+.btn-wa,.btn-call,.btn-mail{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-size:.85rem;font-weight:700;padding:.85rem 1.5rem;border-radius:.875rem;
+  transition:all .22s var(--ease);min-width:170px;
+}
+.btn-wa{background:rgba(37,211,102,.1);border:1.5px solid rgba(37,211,102,.28);color:#25d366}
+.btn-wa:hover{background:rgba(37,211,102,.2);border-color:rgba(37,211,102,.55)}
+.btn-call{background:var(--lime);border:1.5px solid var(--lime);color:var(--bk)}
+.btn-call:hover{background:var(--wh);border-color:var(--wh)}
+.btn-mail{background:transparent;border:1.5px solid rgba(225,222,215,.2);color:var(--cream)}
+.btn-mail:hover{border-color:var(--lime);color:var(--lime)}
+.btn-wa svg,.btn-call svg,.btn-mail svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* ─── OTHER SERVICES ─────────────────────────────────────────────── */
+.other-services{margin-top:3.5rem}
+.other-h{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(225,222,215,.4);margin-bottom:1.25rem}
+.other-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.other-card{
+  background:var(--card);border:1px solid rgba(225,222,215,.08);border-radius:var(--radius-sm);
+  padding:1.1rem;transition:all .25s var(--ease);
+}
+.other-card:hover{border-color:rgba(201,232,58,.3);background:var(--card-hover);transform:translateY(-2px)}
+.other-name{font-size:.85rem;font-weight:700;color:var(--cream);letter-spacing:-.01em}
+
+@media(max-width:760px){
+  .svc-hero{height:240px}
+  .other-grid{grid-template-columns:1fr}
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────────────── */
+.site-footer{background:var(--g1);border-top:1px solid rgba(201,232,58,.07);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-size:1rem;font-weight:800;letter-spacing:-.03em;color:var(--cream)}
+.footer-logo .acc{color:var(--lime)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:.72rem;color:var(--cr2);transition:color .2s}
+.footer-links a:hover{color:var(--lime)}
+.footer-copy{font-size:.68rem;color:rgba(225,222,215,.3)}
+</style>
+</head>
+<body>
+
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <a href="/index.html" class="nav-logo">
+    Brand<span class="acc">&amp;</span>co<span class="acc">.</span>
+  </a>
+  <a href="/index.html#services" class="nav-back" aria-label="Back to services">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Services
+  </a>
+</nav>
+
+<nav class="breadcrumb" aria-label="Breadcrumb" id="breadcrumb">
+  <a href="/index.html">Home</a>
+  <span class="breadcrumb-sep" aria-hidden="true">/</span>
+  <a href="/index.html#services">Services</a>
+  <span class="breadcrumb-sep" aria-hidden="true">/</span>
+  <span id="bcName" aria-current="page">Loading…</span>
+</nav>
+
+<main class="page" id="main">
+  <div class="svc-hero" id="svcHero">
+    <img id="svcImg" src="" alt="">
+    <div class="svc-hero-overlay">
+      <div>
+        <div class="svc-eyebrow" id="svcEyebrow">Our Services</div>
+        <h1 class="svc-h1" id="svcName">Loading…</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="svc-tags" id="svcTags"></div>
+  <p class="svc-desc" id="svcDesc"></p>
+
+  <div class="svc-included">
+    <div class="svc-included-h">What's Included</div>
+    <ul id="svcIncluded"></ul>
+  </div>
+
+  <div class="svc-cta">
+    <div class="svc-cta-h">Ready to get started?</div>
+    <p class="svc-cta-p" id="svcCtaP">Tell us what you need for this service and we'll get back to you with next steps and pricing.</p>
+    <div class="svc-cta-actions">
+      <a class="btn-wa" id="ctaWa" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        WhatsApp Us
+      </a>
+      <a class="btn-call" id="ctaCall" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Call Us
+      </a>
+      <a class="btn-mail" id="ctaMail" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+        Email Us
+      </a>
+    </div>
+  </div>
+
+  <div class="other-services">
+    <div class="other-h">Other Services</div>
+    <div class="other-grid" id="otherGrid"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <a href="/index.html" class="footer-logo">Brand<span class="acc">&amp;</span>co. <span style="font-weight:400;opacity:.5;font-size:.8em">Nigeria</span></a>
+  <nav class="footer-links">
+    <a href="/marketplace.html">Store</a>
+    <a href="/index.html#services">Services</a>
+    <a href="/index.html#contact">Contact</a>
+  </nav>
+  <span class="footer-copy">© 2026 Brand&amp;co. Nigeria</span>
+</footer>
+
+<script src="/services.js"></script>
+<script>
+(function(){
+'use strict';
+
+const WA_NUMBER = '2347049114847';
+const EMAIL     = 'brandandco.ng@gmail.com';
+const PHONE     = '+2347049114847';
+
+const params = new URLSearchParams(location.search);
+const slug   = params.get('slug');
+
+const service = (typeof BRANDCO_SERVICES !== 'undefined')
+  ? BRANDCO_SERVICES.find(s => s.slug === slug)
+  : null;
+
+if(!service){
+  document.getElementById('svcName').textContent = 'Service not found';
+  document.getElementById('svcDesc').textContent = 'This service could not be found. Please browse our services from the homepage.';
+  document.getElementById('breadcrumb').remove();
+  document.getElementById('svcHero').style.display = 'none';
+  document.querySelector('.svc-included').style.display = 'none';
+  document.querySelector('.other-services').style.display = 'none';
+  setTimeout(()=>{ location.href = '/index.html#services'; }, 2500);
+} else {
+  document.title = service.name + ' — Brand&co.';
+  document.querySelector('meta[name="description"]').content = service.description;
+  document.documentElement.style.setProperty('--sc', service.color);
+
+  document.getElementById('bcName').textContent = service.name;
+  document.getElementById('svcImg').src = service.image;
+  document.getElementById('svcImg').alt = service.name;
+  document.getElementById('svcName').textContent = service.name;
+  document.getElementById('svcDesc').textContent = service.description;
+  document.getElementById('svcCtaP').textContent =
+    `Tell us about your ${service.name.toLowerCase()} project and we'll get back to you with next steps and pricing.`;
+
+  document.getElementById('svcTags').innerHTML = service.tags.map(t =>
+    `<span class="svc-tag">${t}</span>`
+  ).join('');
+
+  document.getElementById('svcIncluded').innerHTML = service.whatYouGet.map(item => `
+    <li>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>${item}</span>
+    </li>`).join('');
+
+  const waText = encodeURIComponent(
+    `Hi Brand&co.,\n\nI'm interested in your ${service.name} service. Could you tell me more about pricing and next steps?`
+  );
+  document.getElementById('ctaWa').href = `https://wa.me/${WA_NUMBER}?text=${waText}`;
+  document.getElementById('ctaCall').href = `tel:${PHONE}`;
+  document.getElementById('ctaMail').href =
+    `mailto:${EMAIL}?subject=${encodeURIComponent('Enquiry: ' + service.name)}&body=${encodeURIComponent(`Hi Brand&co.,\n\nI'm interested in your ${service.name} service. Could you tell me more about pricing and next steps?`)}`;
+
+  const others = BRANDCO_SERVICES.filter(s => s.slug !== service.slug).slice(0, 3);
+  document.getElementById('otherGrid').innerHTML = others.map(s => `
+    <a class="other-card" href="/services/service.html?slug=${s.slug}">
+      <div class="other-name">${s.name}</div>
+    </a>`).join('');
+}
+})();
+</script>
+</body>
+</html>
