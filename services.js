@@ -14,13 +14,77 @@ const BRANDCO_SERVICES = [
     image: "/images/brand_identity.jpg",
     tagline: "Strong brands start here.",
     tags: ["Logo Design", "Color Systems", "Typography", "Visual Identity", "Brand Guidelines"],
-    description: "Your brand identity is the foundation everything else is built on. We design a complete visual system — logo, colour palette, typography, and usage guidelines — so your brand looks consistent and intentional everywhere it shows up, from a business card to a billboard.",
-    whatYouGet: [
-      "3 original logo concepts with unlimited revisions until you're happy",
-      "A defined colour palette and typography pairing",
-      "A brand guidelines document your whole team can follow",
-      "Source files in AI, EPS, PNG, and PDF formats"
-    ]
+    description: "A logo is only the start — a complete identity gives your business a consistent, professional look across everything it touches. Choose the package that fits your stage and we'll take it from there.",
+    gallery: [
+      "/images/brand-identity-portfolio-1.jpg",
+      "/images/brand-identity-portfolio-2.jpg",
+      "/images/brand-identity-portfolio-3.jpg",
+      "/images/brand-identity-portfolio-4.jpg",
+      "/images/brand-identity-portfolio-5.jpg",
+      "/images/brand-identity-portfolio-6.jpg",
+      "/images/brand-identity-portfolio-7.jpg",
+      "/images/brand-identity-portfolio-8.jpg"
+    ],
+    pricingTiers: [
+      {
+        tier: "Package 01",
+        name: "The Essential",
+        tagline: "The core identity every new business needs.",
+        price: 150000,
+        delivery: "7 working days",
+        popular: false,
+        features: [
+          "Logo design — 2 concepts, 2 revisions",
+          "Brand colour palette",
+          "Typography style",
+          "Business card design",
+          "Letterhead design",
+          "1 digital flyer design"
+        ]
+      },
+      {
+        tier: "Package 02",
+        name: "The Professional",
+        tagline: "A complete, consistent identity to grow with.",
+        price: 250000,
+        delivery: "10 working days",
+        popular: true,
+        features: [
+          "Everything in Essential, plus:",
+          "Logo design — 3 concepts, 3 revisions",
+          "Company profile design (up to 8 pages)",
+          "3 digital flyer designs",
+          "Brand guidelines (mini style guide)",
+          "Brand merchandise design (3 items)",
+          "Social media kit (DP, cover, 3 templates)"
+        ]
+      },
+      {
+        tier: "Package 03",
+        name: "The Signature",
+        tagline: "The full-scale identity system, built to lead.",
+        price: 450000,
+        delivery: "14 working days",
+        popular: false,
+        features: [
+          "Everything in Professional, plus:",
+          "Company profile (up to 16 pages)",
+          "6 digital flyer designs",
+          "Email signature & invoice template",
+          "Full brand guidelines document",
+          "Brand merchandise design (6 items)",
+          "Packaging / label design (1 product)",
+          "Priority delivery & 30-day support"
+        ]
+      }
+    ],
+    howItWorks: [
+      { step: "Choose a package", desc: "Pick the tier that fits and confirm your brief." },
+      { step: "70% deposit", desc: "A deposit secures your slot and starts the clock." },
+      { step: "Design & review", desc: "We present concepts and refine with your feedback." },
+      { step: "Final handover", desc: "Balance paid, all files delivered and yours to keep." }
+    ],
+    terms: "Prices are valid for 30 days from the date of issue. A 70% non-refundable deposit is required to begin; the balance is due before final files are released. Delivery timelines begin once the brief and deposit are received."
   },
   {
     slug: "corporate-stationery",

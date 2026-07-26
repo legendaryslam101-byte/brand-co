@@ -93,6 +93,72 @@ img{display:block;max-width:100%}
 .svc-included li{display:flex;align-items:flex-start;gap:.65rem;font-size:.92rem;color:var(--cream);line-height:1.5}
 .svc-included li svg{width:18px;height:18px;stroke:var(--lime);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:.15rem}
 
+/* ─── PORTFOLIO GALLERY / SLIDER ─────────────────────────────────── */
+.svc-gallery{margin-bottom:2.75rem}
+.svc-gallery-h{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(225,222,215,.4);margin-bottom:1.1rem}
+.gallery-main{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  border:1px solid rgba(225,222,215,.08);background:var(--card);
+  height:420px;
+}
+.gallery-main img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(14,27,25,.6);backdrop-filter:blur(6px);
+  color:var(--cream);font-size:1.3rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s var(--ease);
+}
+.gallery-nav:hover{background:var(--lime);color:var(--bk)}
+.gallery-nav.prev{left:1rem}
+.gallery-nav.next{right:1rem}
+.gallery-dots{display:flex;justify-content:center;gap:.5rem;margin-top:1rem}
+.gallery-dot{width:7px;height:7px;border-radius:50%;background:rgba(225,222,215,.2);transition:all .2s}
+.gallery-dot.active{background:var(--lime);width:20px;border-radius:4px}
+
+@media(max-width:600px){
+  .gallery-main{height:260px}
+}
+
+/* ─── PRICING TIERS ──────────────────────────────────────────────── */
+.svc-pricing{margin-bottom:2.75rem}
+.svc-pricing-h{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(225,222,215,.4);margin-bottom:1.1rem}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2.5rem}
+.price-card{
+  position:relative;background:var(--card);border:1.5px solid rgba(225,222,215,.1);
+  border-radius:var(--radius);padding:1.75rem;display:flex;flex-direction:column;
+}
+.price-card.popular{background:var(--g2);border-color:var(--lime)}
+.price-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--lime);color:var(--bk);font-size:.62rem;font-weight:800;
+  letter-spacing:.06em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2rem;
+  white-space:nowrap;
+}
+.price-tier{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:.4rem}
+.price-name{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.35rem}
+.price-tagline{font-size:.8rem;color:var(--cr2);line-height:1.5;margin-bottom:1.1rem;min-height:2.4em}
+.price-amount{font-size:1.7rem;font-weight:900;letter-spacing:-.03em;color:var(--cream)}
+.price-delivery{font-size:.7rem;color:var(--cr2);margin-bottom:1.1rem}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-top:auto;padding-top:1rem;border-top:1px solid rgba(225,222,215,.1)}
+.price-features li{display:flex;align-items:flex-start;gap:.5rem;font-size:.8rem;color:var(--cream);line-height:1.4}
+.price-features li svg{width:15px;height:15px;stroke:var(--lime);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:.15rem}
+
+.how-it-works{background:var(--card);border:1px solid rgba(225,222,215,.08);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem}
+.hiw-h{font-size:1.05rem;font-weight:800;letter-spacing:-.02em;margin-bottom:1.25rem}
+.hiw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.hiw-num{font-size:1.6rem;font-weight:900;color:var(--lime);letter-spacing:-.03em;margin-bottom:.4rem}
+.hiw-step{font-size:.85rem;font-weight:700;color:var(--cream);margin-bottom:.3rem}
+.hiw-desc{font-size:.76rem;color:var(--cr2);line-height:1.5}
+
+.svc-terms{font-size:.72rem;color:rgba(225,222,215,.4);line-height:1.6}
+
+@media(max-width:760px){
+  .pricing-grid{grid-template-columns:1fr}
+  .hiw-grid{grid-template-columns:1fr 1fr;row-gap:1.5rem}
+}
+
 /* ─── CTA ────────────────────────────────────────────────────────── */
 .svc-cta{
   background:var(--card);border:1.5px solid rgba(201,232,58,.18);
@@ -174,9 +240,29 @@ img{display:block;max-width:100%}
   <div class="svc-tags" id="svcTags"></div>
   <p class="svc-desc" id="svcDesc"></p>
 
-  <div class="svc-included">
+  <div class="svc-gallery" id="svcGallerySection" style="display:none">
+    <div class="svc-gallery-h">Our Work</div>
+    <div class="gallery-main" id="galleryMain">
+      <img id="galleryImg" src="" alt="">
+      <button class="gallery-nav prev" id="gallPrev" aria-label="Previous image">‹</button>
+      <button class="gallery-nav next" id="gallNext" aria-label="Next image">›</button>
+    </div>
+    <div class="gallery-dots" id="galleryDots"></div>
+  </div>
+
+  <div class="svc-included" id="svcIncludedBox">
     <div class="svc-included-h">What's Included</div>
     <ul id="svcIncluded"></ul>
+  </div>
+
+  <div class="svc-pricing" id="svcPricingSection" style="display:none">
+    <div class="svc-pricing-h">Pricing</div>
+    <div class="pricing-grid" id="pricingGrid"></div>
+    <div class="how-it-works" id="howItWorksBox" style="display:none">
+      <div class="hiw-h">How it works</div>
+      <div class="hiw-grid" id="hiwGrid"></div>
+    </div>
+    <p class="svc-terms" id="svcTerms"></p>
   </div>
 
   <div class="svc-cta">
@@ -237,6 +323,8 @@ if(!service){
   document.getElementById('svcHero').style.display = 'none';
   document.querySelector('.svc-included').style.display = 'none';
   document.querySelector('.other-services').style.display = 'none';
+  document.getElementById('svcGallerySection').style.display = 'none';
+  document.getElementById('svcPricingSection').style.display = 'none';
   setTimeout(()=>{ location.href = '/index.html#services'; }, 2500);
 } else {
   document.title = service.name + ' — Brand&co.';
@@ -255,11 +343,81 @@ if(!service){
     `<span class="svc-tag">${t}</span>`
   ).join('');
 
-  document.getElementById('svcIncluded').innerHTML = service.whatYouGet.map(item => `
-    <li>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-      <span>${item}</span>
-    </li>`).join('');
+  // Portfolio gallery/slider — only shown for services that have one.
+  if (service.gallery && service.gallery.length) {
+    const gallerySection = document.getElementById('svcGallerySection');
+    const galleryImg = document.getElementById('galleryImg');
+    const dotsEl = document.getElementById('galleryDots');
+    let galleryIdx = 0;
+
+    gallerySection.style.display = 'block';
+    galleryImg.alt = service.name + ' — portfolio example';
+
+    dotsEl.innerHTML = service.gallery.map((_, i) =>
+      `<button class="gallery-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Go to image ${i + 1}"></button>`
+    ).join('');
+
+    function setGalleryImage(idx) {
+      galleryIdx = ((idx % service.gallery.length) + service.gallery.length) % service.gallery.length;
+      galleryImg.src = service.gallery[galleryIdx];
+      dotsEl.querySelectorAll('.gallery-dot').forEach((d, i) => d.classList.toggle('active', i === galleryIdx));
+    }
+    setGalleryImage(0);
+
+    document.getElementById('gallPrev').addEventListener('click', () => setGalleryImage(galleryIdx - 1));
+    document.getElementById('gallNext').addEventListener('click', () => setGalleryImage(galleryIdx + 1));
+    dotsEl.addEventListener('click', e => {
+      const btn = e.target.closest('[data-idx]');
+      if (btn) setGalleryImage(+btn.dataset.idx);
+    });
+  }
+
+  // Tiered pricing (e.g. Brand Identity Design) replaces the plain
+  // "What's Included" list with package cards + how-it-works + terms.
+  if (service.pricingTiers && service.pricingTiers.length) {
+    document.getElementById('svcIncludedBox').style.display = 'none';
+    document.getElementById('svcPricingSection').style.display = 'block';
+
+    document.getElementById('pricingGrid').innerHTML = service.pricingTiers.map(tier => `
+      <div class="price-card${tier.popular ? ' popular' : ''}">
+        ${tier.popular ? '<div class="price-badge">★ Most Popular</div>' : ''}
+        <div class="price-tier">${tier.tier}</div>
+        <div class="price-name">${tier.name}</div>
+        <div class="price-tagline">${tier.tagline}</div>
+        <div class="price-amount">₦${tier.price.toLocaleString('en-NG')}</div>
+        <div class="price-delivery">Delivery: ${tier.delivery}</div>
+        <ul class="price-features">
+          ${tier.features.map(f => `
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>${f}</span>
+            </li>`).join('')}
+        </ul>
+      </div>`).join('');
+
+    if (service.howItWorks && service.howItWorks.length) {
+      document.getElementById('howItWorksBox').style.display = 'block';
+      document.getElementById('hiwGrid').innerHTML = service.howItWorks.map((s, i) => `
+        <div>
+          <div class="hiw-num">${i + 1}</div>
+          <div class="hiw-step">${s.step}</div>
+          <div class="hiw-desc">${s.desc}</div>
+        </div>`).join('');
+    }
+
+    if (service.terms) {
+      document.getElementById('svcTerms').textContent = service.terms;
+    }
+
+    document.getElementById('svcCtaP').textContent =
+      `Choose a package above and message us to lock in your slot.`;
+  } else {
+    document.getElementById('svcIncluded').innerHTML = service.whatYouGet.map(item => `
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>${item}</span>
+      </li>`).join('');
+  }
 
   const waText = encodeURIComponent(
     `Hi Brand&co.,\n\nI'm interested in your ${service.name} service. Could you tell me more about pricing and next steps?`
