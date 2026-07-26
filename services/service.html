@@ -350,12 +350,29 @@ if(!service){
     }
     setGalleryImage(0);
 
-    prevBtn.addEventListener('click', () => setGalleryImage(galleryIdx - 1));
-    nextBtn.addEventListener('click', () => setGalleryImage(galleryIdx + 1));
+    // Auto-advance every 4s; any manual interaction restarts the timer so it
+    // doesn't jump right after the visitor just clicked something. Paused
+    // while the pointer is over the hero so it's not fighting a reader.
+    const AUTOPLAY_MS = 4000;
+    let autoplayTimer = null;
+    function stopAutoplay(){ clearInterval(autoplayTimer); }
+    function startAutoplay(){
+      stopAutoplay();
+      autoplayTimer = setInterval(() => setGalleryImage(galleryIdx + 1), AUTOPLAY_MS);
+    }
+    function restartAutoplay(){ startAutoplay(); }
+
+    prevBtn.addEventListener('click', () => { setGalleryImage(galleryIdx - 1); restartAutoplay(); });
+    nextBtn.addEventListener('click', () => { setGalleryImage(galleryIdx + 1); restartAutoplay(); });
     dotsEl.addEventListener('click', e => {
       const btn = e.target.closest('[data-idx]');
-      if (btn) setGalleryImage(+btn.dataset.idx);
+      if (btn) { setGalleryImage(+btn.dataset.idx); restartAutoplay(); }
     });
+
+    const heroEl = document.getElementById('svcHero');
+    heroEl.addEventListener('mouseenter', stopAutoplay);
+    heroEl.addEventListener('mouseleave', startAutoplay);
+    startAutoplay();
   }
 
   // Tiered pricing (e.g. Brand Identity Design) replaces the plain
