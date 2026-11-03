@@ -17,7 +17,8 @@ router.post(
   [
     body('productId').trim().notEmpty().withMessage('productId is required'),
     body('qty').optional().isInt({ min: 1 }),
-    body('packageSize').optional().isInt({ min: 1 }),
+    // product.html sends packageSize: null for products not sold in packages.
+    body('packageSize').optional({ values: 'null' }).isInt({ min: 1 }),
     body('options').optional().isObject(),
   ],
   validate,
