@@ -65,7 +65,14 @@ const createOrder = asyncHandler(async (req, res) => {
     if (!env.serviceCategories.includes(row.category)) hasPhysical = true;
     return { ...row, line_total: lineTotal };
   });
-  const deliveryFee = hasPhysical && subtotal < env.freeDeliveryThreshold ? env.deliveryFee : 0;
+  let deliveryFee = 0;
+  if (hasPhysical) {
+    const zone = shippingAddress && shippingAddress.zone;
+    if (!Object.hasOwn(env.deliveryFees, zone)) {
+      throw new ApiError(400, 'Please choose a delivery location');
+    }
+    deliveryFee = env.deliveryFees[zone];
+  }
   const total = subtotal + deliveryFee;
   const orderNumber = generateOrderNumber();
 

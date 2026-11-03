@@ -55,14 +55,11 @@ async function buildCartResponse(cart) {
   );
 
   let subtotal = 0;
-  let hasPhysical = false;
-
   const items = rows.map((row) => {
     const basis = (row.quantity_config && row.quantity_config.priceBasis) || 1;
     const pkg = row.package_size || 1;
     const lineTotal = Math.round((row.unit_price / basis) * pkg * row.qty * 100) / 100;
     subtotal += lineTotal;
-    if (!env.serviceCategories.includes(row.category)) hasPhysical = true;
 
     return {
       id: row.id,
@@ -79,7 +76,9 @@ async function buildCartResponse(cart) {
     };
   });
 
-  const deliveryFee = hasPhysical && subtotal < env.freeDeliveryThreshold ? env.deliveryFee : 0;
+  // Delivery depends on the zone picked at checkout, so the cart can't know it
+  // yet — createOrder adds it once the shopper has chosen.
+  const deliveryFee = 0;
 
   return {
     id: cart.id,

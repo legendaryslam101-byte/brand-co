@@ -27,7 +27,7 @@ services:
         sync: false
       - key: PAYSTACK_CALLBACK_URL
         value: https://brandandco.online/marketplace.html?payment=callback
-      - key: FREE_DELIVERY_THRESHOLD
-        value: "100000"
-      - key: DELIVERY_FEE
-        value: "2500"
+      - key: DELIVERY_FEE_LAGOS
+        value: "7000"
+      - key: DELIVERY_FEE_OUTSIDE_LAGOS
+        value: "10000"

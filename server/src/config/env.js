@@ -36,7 +36,11 @@ module.exports = {
   paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY,
   paystackCallbackUrl: process.env.PAYSTACK_CALLBACK_URL,
 
-  freeDeliveryThreshold: parseInt(process.env.FREE_DELIVERY_THRESHOLD, 10) || 100000,
-  deliveryFee: parseInt(process.env.DELIVERY_FEE, 10) || 2500,
+  // Keyed by the delivery zone the shopper picks at checkout (marketplace.html
+  // #cfZone) — keep these in sync with the fees shown there.
+  deliveryFees: {
+    lagos: parseInt(process.env.DELIVERY_FEE_LAGOS, 10) || 7000,
+    outside_lagos: parseInt(process.env.DELIVERY_FEE_OUTSIDE_LAGOS, 10) || 10000,
+  },
   serviceCategories: ['Services', 'Digital'],
 };

@@ -69,7 +69,7 @@ for confirming the process itself is healthy.
 | `PAYSTACK_SECRET_KEY` | **Server-side only, never expose this.** From the Paystack dashboard |
 | `PAYSTACK_PUBLIC_KEY` | Safe to expose to the frontend if you later add Paystack Inline |
 | `PAYSTACK_CALLBACK_URL` | Where Paystack redirects the shopper after paying |
-| `FREE_DELIVERY_THRESHOLD`, `DELIVERY_FEE` | Must match the storefront's own `CONFIG` in `marketplace.html` (already defaulted to the same values: ₦2,500 delivery, free above ₦100,000) |
+| `DELIVERY_FEE_LAGOS`, `DELIVERY_FEE_OUTSIDE_LAGOS` | Must match the storefront's own `CONFIG` in `marketplace.html` (already defaulted to the same values: ₦7,000 within Lagos, ₦10,000 outside) |
 
 In production, the app **fails fast at boot** if `DATABASE_URL`, `JWT_SECRET`,
 or the Paystack keys are missing — better than silently running insecurely.
