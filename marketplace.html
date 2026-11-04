@@ -969,6 +969,7 @@ input,select,textarea{font-family:inherit}
       or a kickoff call within 24 hours for services.
     </p>
     <div class="success-actions">
+      <a class="success-back" id="successSendDesign" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;justify-content:center;gap:.5rem">Send Your Design on WhatsApp</a>
       <button class="success-back" id="successBack">Continue Shopping</button>
       <div class="success-home" onclick="window.location.href='index.html'">← Back to Brand&co. website</div>
     </div>
@@ -1004,6 +1005,8 @@ const CONFIG = {
   SERVICE_CATEGORIES: ['Services', 'Digital'], // no delivery for these
 };
 
+const WA_NUMBER = '2347049114847';
+
 function getDeliveryFee(zone) {
   return zone === 'outside_lagos' ? CONFIG.DELIVERY_FEE_OUTSIDE_LAGOS : CONFIG.DELIVERY_FEE_LAGOS;
 }
@@ -1026,6 +1029,7 @@ async function refreshCart(){
       packageSize: i.packageSize,
       qty: i.qty,
       unitPrice: i.unitPrice,
+      design: i.design,
     }));
   } catch (err) {
     console.error('Failed to load cart', err);
@@ -1064,7 +1068,19 @@ function lineTotal(p, ci) {
   // ci.unitPrice (locked in when added, e.g. for variant-priced products like
   // mugs) takes precedence over the flat catalog price.
   const price = ci.unitPrice != null ? ci.unitPrice : p.price;
-  return Math.round((price / basis) * pkg * ci.qty);
+  return Math.round((price / basis) * pkg * ci.qty) + designFee(ci);
+}
+
+// Flat per-line fee when the Brand&co. team designs the artwork (set server-side).
+function designFee(ci) {
+  return (ci.design && Number(ci.design.fee)) || 0;
+}
+
+function designLabel(ci) {
+  if (!ci.design) return '';
+  return ci.design.method === 'team'
+    ? `Design by Brand&co. (+${fmt(designFee(ci))})`
+    : 'Your own design (send after checkout)';
 }
 
 function cartTotal() {
@@ -1160,7 +1176,8 @@ function renderProducts() {
     atcBtn && atcBtn.addEventListener('click', e => {
       e.stopPropagation();
       if (p.stock === 'Out of Stock') return;
-      if (hasOptions || isPackaged || ['Services','Digital'].includes(p.category)) {
+      // Custom-artwork products need the design step too, so they always go via the product page.
+      if (p.customDesign || hasOptions || isPackaged || ['Services','Digital'].includes(p.category)) {
         // Packaged products need a package-size choice — send to the product
         // page instead of silently adding a default-sized package.
         location.href = `/marketplace/product.html?slug=${slug}`;
@@ -1194,8 +1211,8 @@ function buildCard(p) {
   const productUrl = `/marketplace/product.html?slug=${slug}`;
 
   const atcLabel = outOfStock ? 'Out of Stock'
-    : (hasOptions || isPackaged || isService) ? 'View Details'
-    : 'Add to Cart';
+    : (p.customDesign || hasOptions || isPackaged || isService) ? 'View Details'
+    : 'Order Now';
 
   const badgeHtml = p.badge
     ? `<div class="pc-badge${p.badge === 'New' ? ' badge-new' : p.badge === 'Limited' ? ' badge-limited' : ''}">${p.badge}</div>`
@@ -1318,6 +1335,7 @@ function renderCartBody() {
         <div class="ci-name">${p.name}</div>
         ${varLabel ? `<div class="ci-meta">${varLabel}</div>` : (ci.packageSize ? '' : `<div class="ci-meta">${p.category}</div>`)}
         ${ci.packageSize ? `<div class="ci-package">Package: ${ci.packageSize.toLocaleString('en-NG')} ${unit || 'pcs'}</div>` : ''}
+        ${ci.design ? `<div class="ci-package">${designLabel(ci)}</div>` : ''}
         <div class="ci-controls">
           <div class="ci-qty">
             <button onclick="updateQty(${idx},-1)">−</button>
@@ -1435,7 +1453,7 @@ function renderCheckoutOrderSummary() {
       <div class="co-item-img"><img src="${pImg2}" alt="${p.name}" loading="lazy"></div>
       <div class="co-item-info">
         <div class="co-item-name">${p.name}</div>
-        <div class="co-item-meta">${varLabel ? varLabel + ' · ' : ''}${qtyMeta}</div>
+        <div class="co-item-meta">${varLabel ? varLabel + ' · ' : ''}${qtyMeta}${ci.design ? ' · ' + designLabel(ci) : ''}</div>
       </div>
       <div class="co-item-price">${fmt(lineTotal(p, ci))}</div>
     </div>`;
@@ -1522,6 +1540,15 @@ function showSuccess(orderNumber) {
   $('successOrderNum').textContent = orderNumber;
   $('successMsg').textContent =
     'Order confirmed! You\'ll receive a confirmation email shortly, and our team will reach out with next steps.';
+  // Set by design-choice.html when the shopper chose to supply their own artwork.
+  let sendDesign = false;
+  try { sendDesign = sessionStorage.getItem('bc_send_design') === '1'; sessionStorage.removeItem('bc_send_design'); } catch (e) {}
+  if (sendDesign) {
+    $('successMsg').textContent = 'Order confirmed! Now send us your design file so we can get started.';
+    const text = encodeURIComponent(`Hi Brand&co., here is my design file for order ${orderNumber}.`);
+    $('successSendDesign').href = `https://wa.me/${WA_NUMBER}?text=${text}`;
+    $('successSendDesign').style.display = 'flex';
+  }
   $('successOverlay').classList.add('open');
 }
 

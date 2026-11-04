@@ -7,6 +7,8 @@ const {
   validatePackageSize,
   resolveUnitPrice,
   computeLineTotal,
+  normalizeDesign,
+  designFeeOf,
 } = require('../utils/pricing');
 const env = require('../config/env');
 
@@ -58,7 +60,7 @@ async function buildCartResponse(cart) {
   const items = rows.map((row) => {
     const basis = (row.quantity_config && row.quantity_config.priceBasis) || 1;
     const pkg = row.package_size || 1;
-    const lineTotal = Math.round((row.unit_price / basis) * pkg * row.qty * 100) / 100;
+    const lineTotal = Math.round((row.unit_price / basis) * pkg * row.qty * 100) / 100 + designFeeOf(row.design);
     subtotal += lineTotal;
 
     return {
@@ -72,6 +74,7 @@ async function buildCartResponse(cart) {
       unitPrice: Number(row.unit_price),
       qty: row.qty,
       unit: row.quantity_config && row.quantity_config.unit,
+      design: row.design || null,
       lineTotal,
     };
   });
@@ -96,7 +99,7 @@ const getCart = asyncHandler(async (req, res) => {
 });
 
 const addItem = asyncHandler(async (req, res) => {
-  const { productId, options, packageSize, qty } = req.body;
+  const { productId, options, packageSize, qty, design } = req.body;
 
   const { rows: productRows } = await query('SELECT * FROM products WHERE id = $1', [productId]);
   if (!productRows.length) throw new ApiError(404, 'Product not found');
@@ -106,15 +109,17 @@ const addItem = asyncHandler(async (req, res) => {
   const validPackageSize = validatePackageSize(product, packageSize);
   const unitPrice = resolveUnitPrice(product, normalizedOptions);
   const quantity = Math.max(1, parseInt(qty, 10) || 1);
+  const normalizedDesign = normalizeDesign(product, design, env.designFee);
 
   const cart = await resolveCart(req, res);
 
   // Same product + same options + same package size = same line, qty adds up.
   // (Mirrors the storefront's own dedupe-by-configuration cart behaviour.)
-  const { rows: existingRows } = await query(
+  // Lines with a design choice are never merged: each carries its own brief/fee.
+  const { rows: existingRows } = normalizedDesign ? { rows: [] } : await query(
     `SELECT * FROM cart_items
      WHERE cart_id = $1 AND product_id = $2 AND options = $3::jsonb
-       AND package_size IS NOT DISTINCT FROM $4`,
+       AND package_size IS NOT DISTINCT FROM $4 AND design IS NULL`,
     [cart.id, product.id, JSON.stringify(normalizedOptions), validPackageSize]
   );
 
@@ -125,9 +130,10 @@ const addItem = asyncHandler(async (req, res) => {
     ]);
   } else {
     await query(
-      `INSERT INTO cart_items (cart_id, product_id, options, package_size, unit_price, qty)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [cart.id, product.id, JSON.stringify(normalizedOptions), validPackageSize, unitPrice, quantity]
+      `INSERT INTO cart_items (cart_id, product_id, options, package_size, unit_price, qty, design)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [cart.id, product.id, JSON.stringify(normalizedOptions), validPackageSize, unitPrice, quantity,
+       normalizedDesign && JSON.stringify(normalizedDesign)]
     );
   }
 

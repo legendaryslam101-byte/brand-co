@@ -112,6 +112,12 @@ CREATE TABLE IF NOT EXISTS order_items (
 
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items (order_id);
 
+-- How the customer is supplying artwork for custom-design products:
+-- { "method": "upload" } — they send their own file after paying, or
+-- { "method": "team", "brief": "...", "fee": 5000 } — Brand&co. designs it.
+ALTER TABLE cart_items  ADD COLUMN IF NOT EXISTS design JSONB;
+ALTER TABLE order_items ADD COLUMN IF NOT EXISTS design JSONB;
+
 -- ─── PAYMENTS ────────────────────────────────────────────────────────────
 -- One row per Paystack transaction attempt against an order (an order can
 -- have more than one if the shopper retries after a failed payment).

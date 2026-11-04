@@ -20,6 +20,8 @@ router.post(
     // product.html sends packageSize: null for products not sold in packages.
     body('packageSize').optional({ values: 'null' }).isInt({ min: 1 }),
     body('options').optional().isObject(),
+    body('design').optional({ values: 'null' }).isObject(),
+    body('design.method').optional().isIn(['upload', 'team']),
   ],
   validate,
   ctrl.addItem

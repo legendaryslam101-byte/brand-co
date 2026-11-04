@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Would You Like to Proceed? — Brand&amp;co. Store</title>
+<title>Your Design — Brand&amp;co. Store</title>
 <meta name="description" content="Upload your own design or get help from the Brand&amp;co. design team.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,6 +103,45 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .back-link a:hover{color:var(--lime)}
 .back-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
+/* ─── SELECTABLE CHOICES / BRIEF ─────────────────────────────────── */
+.os-wrap{margin-bottom:2.5rem}
+.os-wrap .order-summary{margin-bottom:0}
+.os-totals{background:var(--card);border:1px solid rgba(225,222,215,.08);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:.9rem 1.5rem 1.1rem;margin-top:-.75rem;padding-top:1.5rem}
+.os-row{display:flex;justify-content:space-between;font-size:.85rem;color:var(--cr2);padding:.2rem 0}
+.os-row.total{color:var(--cream);font-weight:800;font-size:1rem;border-top:1px solid var(--cr3);margin-top:.4rem;padding-top:.6rem}
+.os-row.total span:last-child{color:var(--lime)}
+.os-row.fee{color:var(--lime)}
+.choice-card{cursor:pointer;position:relative}
+.choice-card input{position:absolute;opacity:0;pointer-events:none}
+.choice-card .tick{position:absolute;top:1.25rem;right:1.25rem;width:24px;height:24px;border-radius:50%;border:2px solid var(--cr3);display:flex;align-items:center;justify-content:center;transition:all .2s var(--ease)}
+.choice-card .tick svg{width:13px;height:13px;stroke:var(--bk);fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.choice-card.on{border-color:var(--lime);background:var(--card-hover)}
+.choice-card.on .tick{background:var(--lime);border-color:var(--lime)}
+.choice-card.on .tick svg{opacity:1}
+.choice-card input:focus-visible ~ .tick{outline:2px solid var(--lime);outline-offset:3px}
+.fee-badge{font-size:.68rem;font-weight:800;letter-spacing:.06em;color:var(--bk);background:var(--lime);border-radius:2rem;padding:.2rem .6rem;margin-left:.5rem;vertical-align:middle}
+.mini-links{font-size:.75rem;color:var(--cr2);margin-top:auto}
+.mini-links a{color:var(--lime);font-weight:600}
+.mini-links a:hover{text-decoration:underline}
+.brief{display:none;margin-top:1.5rem;background:var(--card);border:1.5px solid rgba(201,232,58,.35);border-radius:var(--radius);padding:1.5rem}
+.brief.open{display:block;animation:briefIn .3s var(--ease)}
+@keyframes briefIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.brief label{display:block;font-size:.95rem;font-weight:800;letter-spacing:-.01em;margin-bottom:.35rem}
+.brief .hint{font-size:.78rem;color:var(--cr2);margin-bottom:.9rem;line-height:1.55}
+.brief textarea{width:100%;min-height:190px;resize:vertical;background:rgba(14,27,25,.35);border:1.5px solid var(--cr3);border-radius:var(--radius-sm);color:var(--cream);font:inherit;font-size:.9rem;line-height:1.6;padding:1rem}
+.brief textarea::placeholder{color:rgba(225,222,215,.38)}
+.brief textarea:focus{outline:none;border-color:var(--lime)}
+/* Keep the floating WhatsApp button off the brief while someone is typing in it. */
+body:has(#briefText:focus) .wa-float{opacity:0;pointer-events:none}
+.brief .count{font-size:.7rem;color:var(--cr2);text-align:right;margin-top:.4rem}
+.proceed{margin-top:2rem;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.btn-go{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;max-width:420px;min-height:54px;border-radius:2rem;background:var(--lime);color:var(--bk);font-size:.95rem;font-weight:800;transition:all .22s var(--ease)}
+.btn-go:hover{background:var(--wh);transform:translateY(-2px)}
+.btn-go:disabled{opacity:.4;pointer-events:none}
+.btn-go.loading{opacity:.7;pointer-events:none}
+.btn-go svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.form-err{font-size:.8rem;color:#ff8a7a;min-height:1.1em;text-align:center}
+
 /* ─── FOOTER (shared) ────────────────────────────────────────────── */
 .site-footer{background:var(--g1);border-top:1px solid rgba(201,232,58,.07);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 .footer-logo{font-size:1rem;font-weight:800;letter-spacing:-.03em;color:var(--cream)}
@@ -128,55 +167,59 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 <main class="page">
   <div class="page-head">
     <div class="eyebrow">One Last Step</div>
-    <h1>How would you like to proceed?</h1>
-    <p>Tell us how you'd like to handle your artwork and we'll get your order moving right away.</p>
+    <h1>How would you like to handle your design?</h1>
+    <p>Send us your own artwork, or let our design team create it for you.</p>
   </div>
 
-  <div class="order-summary" id="orderSummary" style="display:none">
-    <img id="osImg" src="" alt="">
-    <div class="os-info">
-      <div class="os-name" id="osName">—</div>
-      <div class="os-meta" id="osMeta">—</div>
+  <div class="os-wrap" id="osWrap" style="display:none">
+    <div class="order-summary">
+      <img id="osImg" src="" alt="">
+      <div class="os-info">
+        <div class="os-name" id="osName">—</div>
+        <div class="os-meta" id="osMeta">—</div>
+      </div>
+      <div class="os-price" id="osPrice">₦0</div>
     </div>
-    <div class="os-price" id="osPrice">₦0</div>
+    <div class="os-totals">
+      <div class="os-row"><span>Product</span><span id="osSub">₦0</span></div>
+      <div class="os-row fee" id="osFeeRow" style="display:none"><span>Design by Brand&amp;co.</span><span id="osFee">₦0</span></div>
+      <div class="os-row total"><span>Total <small style="font-weight:500;color:var(--cr2)">(delivery added at checkout)</small></span><span id="osTotal">₦0</span></div>
+    </div>
   </div>
 
-  <div class="choices">
-    <div class="choice-card">
+  <div class="choices" role="radiogroup" aria-label="Design option">
+    <label class="choice-card" id="cardUpload">
+      <input type="radio" name="design" value="upload">
+      <span class="tick"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
       <div class="choice-icon">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </div>
       <h2>Upload Your Own Design</h2>
-      <p>Already have your artwork ready? Send us your file directly and our team will review it and get your order into production.</p>
-      <div class="choice-actions">
-        <a class="btn-wa" id="uploadWa" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
-          Send via WhatsApp
-        </a>
-        <a class="btn-mail" id="uploadMail" href="#">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><polyline points="22 6 12 13 2 6"/></svg>
-          Send via Email
-        </a>
-      </div>
-    </div>
+      <p>Already have your artwork? Place your order now, then send your file to us on WhatsApp or email. We'll check it before it goes to print.</p>
+      <div class="mini-links">Ready to send it now? <a id="uploadWa" href="#" target="_blank" rel="noopener">WhatsApp</a> · <a id="uploadMail" href="#">Email</a></div>
+    </label>
 
-    <div class="choice-card">
+    <label class="choice-card" id="cardTeam">
+      <input type="radio" name="design" value="team">
+      <span class="tick"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
       <div class="choice-icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
       </div>
-      <h2>Contact Our Design Team</h2>
-      <p>Don't have artwork yet? No problem — our design team can create it for you. Reach out and we'll take it from there.</p>
-      <div class="choice-actions">
-        <a class="btn-wa" id="contactWa" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
-          Chat via WhatsApp
-        </a>
-        <a class="btn-mail" id="contactMail" href="#">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><polyline points="22 6 12 13 2 6"/></svg>
-          Email Design Team
-        </a>
-      </div>
-    </div>
+      <h2>Let Our Team Design It<span class="fee-badge" id="feeBadge">+₦5,000</span></h2>
+      <p>No artwork yet? Our designers will create it for you. A one-time design fee of <strong id="feeInline">₦5,000</strong> is added to your order.</p>
+    </label>
+  </div>
+
+  <div class="brief" id="brief">
+    <label for="briefText">Your design brief</label>
+    <div class="hint">The more detail you give, the closer our first draft will be to what you want.</div>
+    <textarea id="briefText" maxlength="4000" placeholder="Include all contact details and information you want in your design here. Add all remarks, preferred colours, references and additional instructions here."></textarea>
+    <div class="count"><span id="briefCount">0</span> / 4000</div>
+  </div>
+
+  <div class="proceed">
+    <div class="form-err" id="formErr" role="alert"></div>
+    <button class="btn-go" id="btnGo" disabled>Continue to Checkout <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
   </div>
 
   <div class="back-link">
@@ -199,64 +242,111 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 <script src="/products.js"></script>
 <script>
+  // Local dev talks to the local backend; anywhere else talks to the deployed API on Render.
+  window.BRANDCO_API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? 'http://localhost:4000'
+    : 'https://brandco-api.onrender.com';
+</script>
+<script src="/api.js"></script>
+<script>
 (function(){
 'use strict';
 
-const WA_NUMBER = '2347049114847';
-const EMAIL     = 'brandandco.ng@gmail.com';
+const WA_NUMBER  = '2347049114847';
+const EMAIL      = 'brandandco.ng@gmail.com';
+// Display only — the backend adds the real fee (DESIGN_FEE, default 5000).
+const DESIGN_FEE = 5000;
+const naira = n => '₦' + Math.round(n).toLocaleString('en-NG');
+const $ = id => document.getElementById(id);
 
-const params = new URLSearchParams(location.search);
+const params      = new URLSearchParams(location.search);
 const slug        = params.get('slug');
-const qty         = parseInt(params.get('qty')) || 1;
+const qty         = Math.max(1, parseInt(params.get('qty')) || 1);
+const pkg         = parseInt(params.get('pkg')) || null;
 const passedPrice = params.get('price') !== null ? parseFloat(params.get('price')) : null;
+let options = {};
+try { options = JSON.parse(params.get('opts') || '{}') || {}; } catch (e) { options = {}; }
 
 const product = (typeof BRANDCO_PRODUCTS !== 'undefined')
   ? BRANDCO_PRODUCTS.find(p => p.slug === slug)
   : null;
 
-document.getElementById('backToProduct').href = slug
+$('backToProduct').href = slug
   ? `/marketplace/product.html?slug=${encodeURIComponent(slug)}`
   : '/marketplace.html';
+$('feeBadge').textContent = '+' + naira(DESIGN_FEE);
+$('feeInline').textContent = naira(DESIGN_FEE);
 
-let orderLine = "an item from Brand&co. Store";
+let productTotal = 0;
+let orderLine = 'an item from Brand&co. Store';
 
-if(product){
+if (product) {
   const basis = (product.quantity && product.quantity.priceBasis) || 1;
-  // Prefer the exact unit price the shopper saw on the product page (accounts
-  // for variant-based pricing, e.g. mugs) over the flat catalog price.
-  const unitPrice = (passedPrice != null ? passedPrice : (product.discountPrice || product.price)) / basis;
-  const total = Math.round(unitPrice * qty);
+  const unitPrice = passedPrice != null ? passedPrice : (product.discountPrice || product.price);
+  productTotal = Math.round((unitPrice / basis) * (pkg || 1) * qty);
   const unit = product.quantity ? product.quantity.unit : 'pcs';
+  const optText = Object.values(options).join(' · ');
+  const qtyText = pkg ? `${pkg.toLocaleString('en-NG')} ${unit}` : `Qty: ${qty.toLocaleString('en-NG')}`;
 
-  document.getElementById('orderSummary').style.display = 'flex';
-  document.getElementById('osImg').src = (product.images && product.images[0]) || '';
-  document.getElementById('osImg').alt = product.name;
-  document.getElementById('osName').textContent = product.name;
-  document.getElementById('osMeta').textContent = product.quantity
-    ? `Qty: ${qty.toLocaleString('en-NG')} ${unit}`
-    : 'Qty: 1';
-  document.getElementById('osPrice').textContent = '₦' + total.toLocaleString('en-NG');
-
-  orderLine = `${product.name} (Qty: ${qty.toLocaleString('en-NG')} ${unit}) — ₦${total.toLocaleString('en-NG')}`;
+  $('osWrap').style.display = 'block';
+  $('osImg').src = (product.images && product.images[0]) || '';
+  $('osImg').alt = product.name;
+  $('osName').textContent = product.name;
+  $('osMeta').textContent = [optText, qtyText].filter(Boolean).join(' · ');
+  $('osPrice').textContent = naira(productTotal);
+  orderLine = `${product.name} (${[optText, qtyText].filter(Boolean).join(', ')}) — ${naira(productTotal)}`;
+} else {
+  $('formErr').textContent = "We couldn't find that product. Please go back to the store and try again.";
 }
 
-const uploadWaText = encodeURIComponent(
-  `Hi Brand&co.,\n\nI'd like to order:\n${orderLine}\n\nI have my own design ready — attaching it here now.`
-);
-const uploadMailBody = encodeURIComponent(
-  `Hi Brand&co.,\n\nI'd like to order:\n${orderLine}\n\nI have my own design ready and have attached it to this email.`
-);
-const contactWaText = encodeURIComponent(
-  `Hi Brand&co.,\n\nI'd like to order:\n${orderLine}\n\nI don't have a design yet — could your team help create one for me?`
-);
-const contactMailBody = encodeURIComponent(
-  `Hi Brand&co.,\n\nI'd like to order:\n${orderLine}\n\nI don't have a design yet — could your design team help create one for me?`
-);
+const uploadWaText = encodeURIComponent(`Hi Brand&co.,\n\nI'm ordering:\n${orderLine}\n\nHere is my design file.`);
+const uploadMailBody = encodeURIComponent(`Hi Brand&co.,\n\nI'm ordering:\n${orderLine}\n\nMy design file is attached.`);
+$('uploadWa').href   = `https://wa.me/${WA_NUMBER}?text=${uploadWaText}`;
+$('uploadMail').href = `mailto:${EMAIL}?subject=${encodeURIComponent('Design file — ' + (product ? product.name : 'Order'))}&body=${uploadMailBody}`;
+// The links sit inside the clickable card; don't let them toggle the choice.
+['uploadWa', 'uploadMail'].forEach(id => $(id).addEventListener('click', e => e.stopPropagation()));
 
-document.getElementById('uploadWa').href    = `https://wa.me/${WA_NUMBER}?text=${uploadWaText}`;
-document.getElementById('uploadMail').href  = `mailto:${EMAIL}?subject=${encodeURIComponent('Design Upload — '+ (product?product.name:'Order'))}&body=${uploadMailBody}`;
-document.getElementById('contactWa').href   = `https://wa.me/${WA_NUMBER}?text=${contactWaText}`;
-document.getElementById('contactMail').href = `mailto:${EMAIL}?subject=${encodeURIComponent('Design Help Needed — '+ (product?product.name:'Order'))}&body=${contactMailBody}`;
+let method = null;
+function choose(m) {
+  method = m;
+  $('cardUpload').classList.toggle('on', m === 'upload');
+  $('cardTeam').classList.toggle('on', m === 'team');
+  $('brief').classList.toggle('open', m === 'team');
+  $('osFeeRow').style.display = m === 'team' ? 'flex' : 'none';
+  $('osFee').textContent = naira(DESIGN_FEE);
+  $('osTotal').textContent = naira(productTotal + (m === 'team' ? DESIGN_FEE : 0));
+  $('formErr').textContent = '';
+  if (m === 'team') setTimeout(() => $('briefText').focus(), 50);
+  validate();
+}
+document.querySelectorAll('input[name="design"]').forEach(r => r.addEventListener('change', () => choose(r.value)));
+
+function validate() {
+  const brief = $('briefText').value.trim();
+  $('briefCount').textContent = $('briefText').value.length;
+  $('btnGo').disabled = !product || !method || (method === 'team' && brief.length < 10);
+}
+$('briefText').addEventListener('input', validate);
+$('osTotal').textContent = naira(productTotal);
+$('osSub').textContent = naira(productTotal);
+
+$('btnGo').addEventListener('click', async () => {
+  const btn = $('btnGo');
+  const design = method === 'team'
+    ? { method: 'team', brief: $('briefText').value.trim() }
+    : { method: 'upload' };
+  btn.classList.add('loading');
+  $('formErr').textContent = '';
+  try {
+    await BrandcoAPI.addCartItem({ productId: product.id, options, qty, packageSize: pkg, design });
+    // Lets the order-confirmed screen remind the customer to send their file.
+    if (method === 'upload') { try { sessionStorage.setItem('bc_send_design', '1'); } catch (e) {} }
+    location.href = '/marketplace.html?opencart=1';
+  } catch (err) {
+    btn.classList.remove('loading');
+    $('formErr').textContent = err.message || 'Something went wrong. Please try again.';
+  }
+});
 
 })();
 </script>

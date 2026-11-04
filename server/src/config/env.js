@@ -43,4 +43,6 @@ module.exports = {
     outside_lagos: parseInt(process.env.DELIVERY_FEE_OUTSIDE_LAGOS, 10) || 10000,
   },
   serviceCategories: ['Services', 'Digital'],
+  // Flat fee per order line when the Brand&co. design team creates the artwork.
+  designFee: parseInt(process.env.DESIGN_FEE, 10) || 5000,
 };

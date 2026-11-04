@@ -43,8 +43,9 @@
   const BrandcoAPI = {
     // Cart
     getCart: () => request('/api/cart'),
-    addCartItem: ({ productId, options, packageSize, qty }) =>
-      request('/api/cart/items', { method: 'POST', body: { productId, options, packageSize, qty } }),
+    // design: { method: 'upload' } | { method: 'team', brief } for custom-artwork products.
+    addCartItem: ({ productId, options, packageSize, qty, design }) =>
+      request('/api/cart/items', { method: 'POST', body: { productId, options, packageSize, qty, design } }),
     updateCartItem: (itemId, qty) =>
       request(`/api/cart/items/${encodeURIComponent(itemId)}`, { method: 'PATCH', body: { qty } }),
     removeCartItem: (itemId) =>

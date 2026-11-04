@@ -77,7 +77,28 @@ function computeLineTotal(product, { unitPrice, packageSize, qty }) {
   return Math.round((unitPrice / basis) * pkg * qty * 100) / 100;
 }
 
+// Normalises how the customer is supplying artwork for a custom-design
+// product. Returns null for products that don't take custom artwork (and for
+// older clients that don't send a choice); the fee is set here, never by the client.
+const DESIGN_BRIEF_MAX = 4000;
+function normalizeDesign(product, design, designFee) {
+  if (!product.custom_design || !design) return null;
+  if (design.method === 'upload') return { method: 'upload' };
+  if (design.method === 'team') {
+    const brief = String(design.brief || '').trim();
+    if (brief.length < 10) throw new ApiError(400, 'Please tell our design team what you want in your design');
+    if (brief.length > DESIGN_BRIEF_MAX) throw new ApiError(400, `Design brief is too long (max ${DESIGN_BRIEF_MAX} characters)`);
+    return { method: 'team', brief, fee: designFee };
+  }
+  throw new ApiError(400, 'Invalid design choice');
+}
+
+// Flat per-line design fee (not multiplied by quantity).
+const designFeeOf = (design) => (design && Number(design.fee)) || 0;
+
 module.exports = {
+  normalizeDesign,
+  designFeeOf,
   validateOptions,
   validatePackageSize,
   isPackaged,

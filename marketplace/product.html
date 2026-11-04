@@ -749,15 +749,11 @@ input,select{font-family:inherit}
 
       <!-- ACTIONS -->
       <div class="actions-section" id="actionsSection">
-        <button class="btn-add-cart" id="btnAddCart" aria-label="Add to cart">
+        <button class="btn-add-cart" id="btnOrder">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          Add to Cart
+          Order Now
         </button>
         <div class="btn-row">
-          <button class="btn-buy" id="btnBuyNow">
-            <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            Buy Now
-          </button>
           <a class="btn-whatsapp" id="btnWhatsApp" href="#" target="_blank" rel="noopener">
             <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
             WhatsApp
@@ -942,13 +938,9 @@ input,select{font-family:inherit}
 
 <!-- ═══════════ STICKY MOBILE CTA ═══════════ -->
 <div class="mobile-cta" id="mobileCta">
-  <button class="btn-buy" id="mobileBuyNow" style="padding:.875rem 1rem">
-    <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    Buy Now
-  </button>
-  <button class="btn-add-cart" id="mobileAddCart">
+  <button class="btn-add-cart" id="mobileOrder">
     <svg viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-    Add to Cart
+    Order Now
   </button>
 </div>
 
@@ -1388,52 +1380,36 @@ function getPackageSize(){
   return isPackaged ? (parseInt(qtySelect.value) || qtyConfig.min) : null;
 }
 
-/* ── ADD TO CART / BUY NOW ──────────────────────────────── */
-async function doAddToCart(){
-  const btn = document.getElementById('btnAddCart');
-  btn.classList.add('loading');
-  btn.textContent = 'Adding…';
-  try {
-    await addToCart(product.id, {...selectedOptions}, getQty(), getPackageSize());
-    toast(`<strong>${product.name}</strong> added to cart. <a href="/marketplace.html?opencart=1">View Cart →</a>`);
-    btn.classList.remove('loading');
-    btn.innerHTML = `
-      <svg viewBox="0 0 24 24" aria-hidden="true" style="width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-      Added to Cart!`;
-    setTimeout(()=>{
-      btn.innerHTML = `
-        <svg viewBox="0 0 24 24" aria-hidden="true" style="width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round">
-          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-        </svg>
-        Add to Cart`;
-    }, 2000);
-  } catch (err) {
-    btn.classList.remove('loading');
-    btn.innerHTML = `Add to Cart`;
-    toast(err.message || 'Could not add to cart. Please try again.', 'error');
-  }
-}
-
-async function doBuyNow(){
+/* ── ORDER NOW ──────────────────────────────────────────── */
+// Custom-artwork products go to design-choice.html first (upload your own
+// design, or have the Brand&co. team design it); everything else goes
+// straight into the cart and on to checkout.
+async function doOrderNow(e){
+  const btn = e.currentTarget;
   if(product.customDesign){
-    const orderQty = isPackaged ? getPackageSize() : getQty();
-    location.href = `/marketplace/design-choice.html?slug=${encodeURIComponent(product.slug)}&qty=${orderQty}&price=${getUnitPrice()}`;
+    const q = new URLSearchParams({
+      slug: product.slug,
+      qty: getQty(),
+      opts: JSON.stringify(selectedOptions),
+      price: getUnitPrice(),
+    });
+    const pkg = getPackageSize();
+    if(pkg) q.set('pkg', pkg);
+    location.href = `/marketplace/design-choice.html?${q}`;
     return;
   }
+  btn.classList.add('loading');
   try {
     await addToCart(product.id, {...selectedOptions}, getQty(), getPackageSize());
     location.href = '/marketplace.html?opencart=1';
   } catch (err) {
-    toast(err.message || 'Could not start checkout. Please try again.', 'error');
+    btn.classList.remove('loading');
+    toast(err.message || 'Could not start your order. Please try again.', 'error');
   }
 }
 
-document.getElementById('btnAddCart').addEventListener('click', doAddToCart);
-document.getElementById('btnBuyNow').addEventListener('click', doBuyNow);
-document.getElementById('mobileAddCart').addEventListener('click', doAddToCart);
-document.getElementById('mobileBuyNow').addEventListener('click', doBuyNow);
+document.getElementById('btnOrder').addEventListener('click', doOrderNow);
+document.getElementById('mobileOrder').addEventListener('click', doOrderNow);
 
 // WhatsApp
 const waText = encodeURIComponent(

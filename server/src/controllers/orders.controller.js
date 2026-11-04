@@ -5,6 +5,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const { resolveCart } = require('./cart.controller');
 const paystack = require('../services/paystack.service');
 const env = require('../config/env');
+const { designFeeOf } = require('../utils/pricing');
 
 function generateOrderNumber() {
   const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -35,8 +36,17 @@ function serializeOrder(order, items) {
       unitPrice: Number(i.unit_price),
       qty: i.qty,
       lineTotal: Number(i.line_total),
+      design: i.design || null,
     })),
   };
+}
+
+function describeDesign(design) {
+  if (!design) return 'No custom artwork';
+  if (design.method === 'upload') return 'Customer will send their own design (WhatsApp/email)';
+  // Paystack caps metadata values, so keep the brief to a readable excerpt; the full text is on the order.
+  const brief = design.brief.length > 500 ? design.brief.slice(0, 500) + '…' : design.brief;
+  return `Design by Brand&co. (+₦${design.fee.toLocaleString('en-NG')}). Brief: ${brief}`;
 }
 
 // Builds an order (+ line items, priced authoritatively from the DB, never
@@ -60,7 +70,7 @@ const createOrder = asyncHandler(async (req, res) => {
   const lineItems = cartItems.map((row) => {
     const basis = (row.quantity_config && row.quantity_config.priceBasis) || 1;
     const pkg = row.package_size || 1;
-    const lineTotal = Math.round((row.unit_price / basis) * pkg * row.qty * 100) / 100;
+    const lineTotal = Math.round((row.unit_price / basis) * pkg * row.qty * 100) / 100 + designFeeOf(row.design);
     subtotal += lineTotal;
     if (!env.serviceCategories.includes(row.category)) hasPhysical = true;
     return { ...row, line_total: lineTotal };
@@ -100,8 +110,8 @@ const createOrder = asyncHandler(async (req, res) => {
     for (const item of lineItems) {
       await client.query(
         `INSERT INTO order_items (
-           order_id, product_id, product_name, options, package_size, unit_price, qty, line_total
-         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+           order_id, product_id, product_name, options, package_size, unit_price, qty, line_total, design
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
         [
           newOrder.id,
           item.product_id,
@@ -111,6 +121,7 @@ const createOrder = asyncHandler(async (req, res) => {
           item.unit_price,
           item.qty,
           item.line_total,
+          item.design && JSON.stringify(item.design),
         ]
       );
     }
@@ -129,7 +140,17 @@ const createOrder = asyncHandler(async (req, res) => {
       email: customerEmail,
       amountNaira: total,
       reference,
-      metadata: { orderId: order.id, orderNumber: order.order_number },
+      metadata: {
+        orderId: order.id,
+        orderNumber: order.order_number,
+        // custom_fields show up on the transaction in the Paystack dashboard,
+        // so the team can see each item's artwork arrangement there.
+        custom_fields: lineItems.map((item, i) => ({
+          display_name: `Item ${i + 1}: ${item.product_name}`,
+          variable_name: `item_${i + 1}`,
+          value: describeDesign(item.design),
+        })),
+      },
     });
 
     await query('UPDATE orders SET payment_reference = $1 WHERE id = $2', [reference, order.id]);
